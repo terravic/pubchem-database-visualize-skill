@@ -1,0 +1,305 @@
+{
+  "compounds": {
+    "2244": {
+      "cid": 2244,
+      "names": ["aspirin", "acetylsalicylic acid", "2-acetyloxybenzoic acid"],
+      "canonical_smiles": "CC(=O)OC1=CC=CC=C1C(=O)O",
+      "isomeric_smiles": "CC(=O)OC1=CC=CC=C1C(=O)O",
+      "iupac_name": "2-acetyloxybenzoic acid",
+      "molecular_formula": "C9H8O4",
+      "inchi": "InChI=1S/C9H8O4/c1-6(10)13-8-5-3-2-4-7(8)9(11)12/h2-5H,1H3,(H,11,12)",
+      "inchi_key": "BSYNRYMUTXBXSQ-UHFFFAOYSA-N",
+      "properties": {
+        "molecular_weight": 180.16,
+        "xlogp": 1.2,
+        "h_bond_donors": 1,
+        "h_bond_acceptors": 4,
+        "tpsa": 63.6,
+        "rotatable_bonds": 2,
+        "heavy_atoms": 13,
+        "exact_mass": 180.042,
+        "complexity": 212.0
+      },
+      "safety": {
+        "signal_word": "WARNING",
+        "hazard_statements": [
+          { "code": "H302", "statement": "Harmful if swallowed" },
+          { "code": "H315", "statement": "Causes skin irritation" },
+          { "code": "H319", "statement": "Causes serious eye irritation" }
+        ],
+        "precautionary_statements": [
+          { "code": "P264", "statement": "Wash hands thoroughly after handling." },
+          { "code": "P280", "statement": "Wear protective gloves and eye protection." },
+          { "code": "P301+P312", "statement": "IF SWALLOWED: Call a POISON CENTER/doctor if you feel unwell." }
+        ],
+        "pictograms": ["GHS07-harmful"]
+      },
+      "pharmacology": {
+        "indications": "Indicated for the relief of mild to moderate pain, fever, and inflammation, as well as prevention of thrombotic cardiovascular events.",
+        "mechanism_of_action": "Irreversibly inhibits cyclooxygenase-1 (COX-1) and modifies the enzymatic activity of cyclooxygenase-2 (COX-2), leading to reduced synthesis of prostaglandins and thromboxanes.",
+        "targets": ["Cyclooxygenase-1 (PTGS1)", "Cyclooxygenase-2 (PTGS2)", "Prostaglandin E synthase"]
+      },
+      "bioassays": {
+        "total_tested": 1420,
+        "total_active": 18,
+        "active_assays": [
+          { "aid": 1259253, "name": "COX-1 Inhibition Fluorometric Assay", "target": "PTGS1", "activity": "Active (IC50 4.1 uM)" },
+          { "aid": 1259254, "name": "COX-2 Inhibition Chemiluminescence Assay", "target": "PTGS2", "activity": "Active (IC50 25.0 uM)" },
+          { "aid": 651635, "name": "Platelet Aggregation Inhibition Assay", "target": "Thromboxane A2 Synthase", "activity": "Active (EC50 12.5 uM)" }
+        ]
+      },
+      "analogs": [
+        { "cid": 338, "iupac_name": "salicylic acid", "molecular_formula": "C7H6O3", "similarity_score": 0.89 },
+        { "cid": 5080, "iupac_name": "diflunisal", "molecular_formula": "C13H8F2O3", "similarity_score": 0.86 },
+        { "cid": 1983, "iupac_name": "acetaminophen", "molecular_formula": "C8H9NO2", "similarity_score": 0.74 }
+      ],
+      "has_3d_conformer": true,
+      "conformer_3d_sdf": "2244\n  -OEChem-09152621003D\n\n 13 13  0     0  0  0  0  0  0999 V2000\n   -0.5480    1.3480    0.0220 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.7320    0.7960   -0.0030 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.8460    1.6370    0.0010 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.6910    3.0130    0.0290 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.4190    3.5570    0.0530 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.6970    2.7230    0.0490 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.8990   -0.6720   -0.0350 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.0070   -1.1680   -0.0390 O   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.2010   -1.4280   -0.0590 O   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.6880    0.5470    0.0160 O   0  0  0  0  0  0  0  0  0  0  0  0\n   -2.0220   -0.3440   -0.9630 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.3780   -0.5750   -1.9560 O   0  0  0  0  0  0  0  0  0  0  0  0\n   -3.3280   -1.0770   -0.7020 C   0  0  0  0  0  0  0  0  0  0  0  0\n  1  2  2  0  0  0  0\n  2  3  1  0  0  0  0\n  3  4  2  0  0  0  0\n  4  5  1  0  0  0  0\n  5  6  2  0  0  0  0\n  6  1  1  0  0  0  0\n  2  7  1  0  0  0  0\n  7  8  2  0  0  0  0\n  7  9  1  0  0  0  0\n  1 10  1  0  0  0  0\n 10 11  1  0  0  0  0\n 11 12  2  0  0  0  0\n 11 13  1  0  0  0  0\nM  END\n$$$$\n"
+    },
+    "5291": {
+      "cid": 5291,
+      "names": ["imatinib", "gleevec", "sti-571"],
+      "canonical_smiles": "CC1=C(C=C(C=C1)NC(=O)C2=CC=C(C=C2)CN3CCN(CC3)C)NC4=NC=CC(=N4)C5=CN=CC=C5",
+      "isomeric_smiles": "CC1=C(C=C(C=C1)NC(=O)C2=CC=C(C=C2)CN3CCN(CC3)C)NC4=NC=CC(=N4)C5=CN=CC=C5",
+      "iupac_name": "4-[(4-methylpiperazin-1-yl)methyl]-N-[4-methyl-3-[(4-pyridin-3-ylpyrimidin-2-yl)amino]phenyl]benzamide",
+      "molecular_formula": "C29H31N7O",
+      "inchi": "InChI=1S/C29H31N7O/c1-21-5-10-25(18-27(21)34-29-32-13-8-26(35-29)24-4-3-12-30-19-24)33-28(37)23-6-1-22(2-7-23)20-36-16-14-31(2)15-17-36/h1-13,18-19H,14-17,20H2,1-2H3,(H,33,37)(H,32,34,35)",
+      "inchi_key": "KTUFNOKKBVMGRW-UHFFFAOYSA-N",
+      "properties": {
+        "molecular_weight": 493.6,
+        "xlogp": 3.5,
+        "h_bond_donors": 2,
+        "h_bond_acceptors": 7,
+        "tpsa": 86.3,
+        "rotatable_bonds": 7,
+        "heavy_atoms": 37,
+        "exact_mass": 493.259,
+        "complexity": 745.0
+      },
+      "safety": {
+        "signal_word": "WARNING",
+        "hazard_statements": [
+          { "code": "H302", "statement": "Harmful if swallowed" },
+          { "code": "H315", "statement": "Causes skin irritation" },
+          { "code": "H319", "statement": "Causes serious eye irritation" },
+          { "code": "H335", "statement": "May cause respiratory irritation" },
+          { "code": "H372", "statement": "Causes damage to organs through prolonged or repeated exposure" }
+        ],
+        "precautionary_statements": [
+          { "code": "P260", "statement": "Do not breathe dust/fume/gas/mist/vapours/spray." },
+          { "code": "P280", "statement": "Wear protective gloves/clothing/eye protection." },
+          { "code": "P301+P312", "statement": "IF SWALLOWED: Call a POISON CENTER/doctor if you feel unwell." }
+        ],
+        "pictograms": ["GHS07-harmful", "GHS08-health_hazard"]
+      },
+      "pharmacology": {
+        "indications": "Indicated for the treatment of Philadelphia chromosome-positive chronic myeloid leukemia (CML) and gastrointestinal stromal tumors (GIST).",
+        "mechanism_of_action": "Competitive inhibitor at the ATP-binding site of the BCR-ABL tyrosine kinase, c-KIT proto-oncogene, and platelet-derived growth factor receptor (PDGFR).",
+        "targets": ["BCR-ABL1 Tyrosine Kinase", "c-Kit Kinase (KIT)", "PDGFR-alpha", "PDGFR-beta"]
+      },
+      "bioassays": {
+        "total_tested": 940,
+        "total_active": 42,
+        "active_assays": [
+          { "aid": 1159607, "name": "ABL1 Kinase Biochemical Binding Assay", "target": "ABL1", "activity": "Active (IC50 38.0 nM)" },
+          { "aid": 1159608, "name": "c-Kit Tyrosine Kinase Inhibitor Assay", "target": "KIT", "activity": "Active (IC50 90.0 nM)" },
+          { "aid": 504444, "name": "PDGFRB Kinase Screen", "target": "PDGFRB", "activity": "Active (IC50 110.0 nM)" }
+        ]
+      },
+      "analogs": [
+        { "cid": 9886201, "iupac_name": "nilotinib", "molecular_formula": "C28H22F3N7O", "similarity_score": 0.88 },
+        { "cid": 3062316, "iupac_name": "dasatinib", "molecular_formula": "C22H26ClN7O2S", "similarity_score": 0.82 }
+      ],
+      "has_3d_conformer": true,
+      "conformer_3d_sdf": "5291\n  -OEChem-09152621003D\n\n 37 41  0     0  0  0  0  0  0999 V2000\n    2.3850   -1.5320   -0.5400 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.0660   -1.9540   -0.4560 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.0630   -1.0770   -0.0890 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.3950    0.2480    0.1970 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.7160    0.6730    0.1110 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.7130   -0.2100   -0.2540 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.2840   -1.4640    0.0070 N   0  0  0  0  0  0  0  0  0  0  0  0\n   -2.3160   -0.5890    0.3700 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -2.2280    0.7300    0.6350 N   0  0  0  0  0  0  0  0  0  0  0  0\n   -3.3270    1.4610    0.9630 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -4.5770    0.8870    1.0260 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -4.6620   -0.4570    0.7510 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -3.5650   -1.1890    0.4300 N   0  0  0  0  0  0  0  0  0  0  0  0\n   -5.8360    1.7040    1.3780 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -5.8450    2.9230    2.0570 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -7.0090    3.6490    2.3550 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -8.2120    3.1550    1.9700 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -8.1960    1.9770    1.3090 N   0  0  0  0  0  0  0  0  0  0  0  0\n   -7.0390    1.2580    1.0180 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.8250   -3.3980   -0.7850 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.0910    2.0400    0.4070 N   0  0  0  0  0  0  0  0  0  0  0  0\n    3.3640    2.5440    0.4330 C   0  0  0  0  0  0  0  0  0  0  0  0\n    4.3540    1.8600    0.1690 O   0  0  0  0  0  0  0  0  0  0  0  0\n    3.5670    3.9870    0.8280 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.5700    4.9450    0.6690 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.7930    6.2570    1.0660 C   0  0  0  0  0  0  0  0  0  0  0  0\n    4.0130    6.6500    1.6210 C   0  0  0  0  0  0  0  0  0  0  0  0\n    5.0080    5.6980    1.7760 C   0  0  0  0  0  0  0  0  0  0  0  0\n    4.7930    4.3850    1.3850 C   0  0  0  0  0  0  0  0  0  0  0  0\n    4.2540    8.0670    2.0620 C   0  0  0  0  0  0  0  0  0  0  0  0\n    5.5900    8.5870    1.8100 N   0  0  0  0  0  0  0  0  0  0  0  0\n    6.0120    8.8680    0.4430 C   0  0  0  0  0  0  0  0  0  0  0  0\n    7.3910    9.5080    0.4670 C   0  0  0  0  0  0  0  0  0  0  0  0\n    7.4200   10.7410    1.2580 N   0  0  0  0  0  0  0  0  0  0  0  0\n    6.9740   10.4570    2.6280 C   0  0  0  0  0  0  0  0  0  0  0  0\n    5.5940    9.8210    2.6040 C   0  0  0  0  0  0  0  0  0  0  0  0\n    8.7610   11.3320    1.2680 C   0  0  0  0  0  0  0  0  0  0  0  0\n  1  2  1  0  0  0  0\n  2  3  2  0  0  0  0\n  3  4  1  0  0  0  0\n  4  5  2  0  0  0  0\n  5  6  1  0  0  0  0\n  6  1  2  0  0  0  0\n  3  7  1  0  0  0  0\n  7  8  1  0  0  0  0\n  8  9  2  0  0  0  0\n  9 10  1  0  0  0  0\n 10 11  2  0  0  0  0\n 11 12  1  0  0  0  0\n 12 13  2  0  0  0  0\n 13  8  1  0  0  0  0\n 11 14  1  0  0  0  0\n 14 15  2  0  0  0  0\n 15 16  1  0  0  0  0\n 16 17  2  0  0  0  0\n 17 18  1  0  0  0  0\n 18 19  2  0  0  0  0\n 19 14  1  0  0  0  0\n  2 20  1  0  0  0  0\n  5 21  1  0  0  0  0\n 21 22  1  0  0  0  0\n 22 23  2  0  0  0  0\n 22 24  1  0  0  0  0\n 24 25  2  0  0  0  0\n 25 26  1  0  0  0  0\n 26 27  2  0  0  0  0\n 27 28  1  0  0  0  0\n 28 29  2  0  0  0  0\n 29 24  1  0  0  0  0\n 27 30  1  0  0  0  0\n 30 31  1  0  0  0  0\n 31 32  1  0  0  0  0\n 32 33  1  0  0  0  0\n 33 34  1  0  0  0  0\n 34 35  1  0  0  0  0\n 35 36  1  0  0  0  0\n 36 31  1  0  0  0  0\n 34 37  1  0  0  0  0\nM  END\n$$$$\n"
+    },
+    "2519": {
+      "cid": 2519,
+      "names": ["caffeine", "1,3,7-trimethylxanthine", "guaranine"],
+      "canonical_smiles": "CN1C=NC2=C1C(=O)N(C(=O)N2C)C",
+      "isomeric_smiles": "CN1C=NC2=C1C(=O)N(C(=O)N2C)C",
+      "iupac_name": "1,3,7-trimethylpurine-2,6-dione",
+      "molecular_formula": "C8H10N4O2",
+      "inchi": "InChI=1S/C8H10N4O2/c1-10-4-9-6-5(10)7(13)12(3)8(14)11(6)2/h4H,1-3H3",
+      "inchi_key": "RYYVLZVUVIJVGH-UHFFFAOYSA-N",
+      "properties": {
+        "molecular_weight": 194.19,
+        "xlogp": -0.1,
+        "h_bond_donors": 0,
+        "h_bond_acceptors": 3,
+        "tpsa": 58.4,
+        "rotatable_bonds": 0,
+        "heavy_atoms": 14,
+        "exact_mass": 194.08,
+        "complexity": 293.0
+      },
+      "safety": {
+        "signal_word": "WARNING",
+        "hazard_statements": [
+          { "code": "H302", "statement": "Harmful if swallowed" }
+        ],
+        "precautionary_statements": [
+          { "code": "P264", "statement": "Wash hands thoroughly after handling." },
+          { "code": "P270", "statement": "Do not eat, drink or smoke when using this product." },
+          { "code": "P301+P312", "statement": "IF SWALLOWED: Call a POISON CENTER/doctor if you feel unwell." }
+        ],
+        "pictograms": ["GHS07-harmful"]
+      },
+      "pharmacology": {
+        "indications": "Indicated for the management of apnea of prematurity and as a central nervous system stimulant.",
+        "mechanism_of_action": "Reversible competitive antagonist of adenosine A1, A2A, and A2B receptors. Non-selective inhibitor of phosphodiesterase (PDE) enzymes.",
+        "targets": ["Adenosine A1 Receptor", "Adenosine A2A Receptor", "Phosphodiesterase"]
+      },
+      "bioassays": {
+        "total_tested": 780,
+        "total_active": 12,
+        "active_assays": [
+          { "aid": 1159610, "name": "Adenosine A2A Radioligand Binding", "target": "ADORA2A", "activity": "Active (Ki 12.0 uM)" },
+          { "aid": 1159611, "name": "Phosphodiesterase 4 Inhibition Screen", "target": "PDE4D", "activity": "Active (IC50 500.0 uM)" }
+        ]
+      },
+      "analogs": [
+        { "cid": 2153, "iupac_name": "theophylline", "molecular_formula": "C7H8N4O2", "similarity_score": 0.92 },
+        { "cid": 5429, "iupac_name": "theobromine", "molecular_formula": "C7H8N4O2", "similarity_score": 0.91 }
+      ],
+      "has_3d_conformer": true,
+      "conformer_3d_sdf": "2519\n  -OEChem-09152621003D\n\n 14 15  0     0  0  0  0  0  0999 V2000\n   -0.5480    1.3480    0.0220 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.7320    0.7960   -0.0030 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.8460    1.6370    0.0010 N   0  0  0  0  0  0  0  0  0  0  0  0\n    1.6910    3.0130    0.0290 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.4190    3.5570    0.0530 N   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.6970    2.7230    0.0490 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.8990   -0.6720   -0.0350 N   0  0  0  0  0  0  0  0  0  0  0  0\n    2.0070   -1.1680   -0.0390 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.2010   -1.4280   -0.0590 N   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.6880    0.5470    0.0160 O   0  0  0  0  0  0  0  0  0  0  0  0\n   -2.0220   -0.3440   -0.9630 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.3780   -0.5750   -1.9560 O   0  0  0  0  0  0  0  0  0  0  0  0\n   -3.3280   -1.0770   -0.7020 C   0  0  0  0  0  0  0  0  0  0  0  0\n    3.2120    0.9550    0.0100 C   0  0  0  0  0  0  0  0  0  0  0  0\n  1  2  1  0  0  0  0\n  2  3  1  0  0  0  0\n  3  4  1  0  0  0  0\n  4  5  1  0  0  0  0\n  5  6  1  0  0  0  0\n  6  1  2  0  0  0  0\n  2  7  1  0  0  0  0\n  7  8  1  0  0  0  0\n  8  9  2  0  0  0  0\n  9  1  1  0  0  0  0\n  6 10  2  0  0  0  0\n  4 12  2  0  0  0  0\n  5 11  1  0  0  0  0\n  7 13  1  0  0  0  0\n  3 14  1  0  0  0  0\nM  END\n$$$$\n"
+    },
+    "60823": {
+      "cid": 60823,
+      "names": ["atorvastatin", "lipitor"],
+      "canonical_smiles": "CC(C)C1=C(C(=C(N1CCC(CC(CC(=O)O)O)O)C2=CC=C(C=C2)F)C3=CC=CC=C3)C(=O)NC4=CC=CC=C4",
+      "isomeric_smiles": "CC(C)C1=C(C(=C(N1CCC(CC(CC(=O)O)O)O)C2=CC=C(C=C2)F)C3=CC=CC=C3)C(=O)NC4=CC=CC=C4",
+      "iupac_name": "(3R,5R)-7-[2-(4-fluorophenyl)-5-isopropyl-3-phenyl-4-(phenylcarbamoyl)pyrrol-1-yl]-3,5-dihydroxyheptanoic acid",
+      "molecular_formula": "C33H35FN2O5",
+      "inchi": "InChI=1S/C33H35FN2O5/c1-21(2)31-30(33(41)35-25-11-7-4-8-12-25)29(22-9-5-3-6-10-22)32(23-13-15-24(34)16-14-23)36(31)18-17-26(37)19-27(38)20-28(39)40/h3-16,21,26-27,37-38H,17-20H2,1-2H3,(H,35,41)(H,39,40)",
+      "inchi_key": "XUKUURHRXDUEBC-UHFFFAOYSA-N",
+      "properties": {
+        "molecular_weight": 558.6,
+        "xlogp": 5.7,
+        "h_bond_donors": 4,
+        "h_bond_acceptors": 5,
+        "tpsa": 111.8,
+        "rotatable_bonds": 12,
+        "heavy_atoms": 41,
+        "exact_mass": 558.253,
+        "complexity": 842.0
+      },
+      "safety": {
+        "signal_word": "WARNING",
+        "hazard_statements": [
+          { "code": "H315", "statement": "Causes skin irritation" },
+          { "code": "H319", "statement": "Causes serious eye irritation" }
+        ],
+        "precautionary_statements": [
+          { "code": "P280", "statement": "Wear protective gloves/clothing/eye protection." }
+        ],
+        "pictograms": ["GHS07-harmful"]
+      },
+      "pharmacology": {
+        "indications": "Indicated as an adjunct to diet to reduce elevated total cholesterol, LDL-C, apo B, and triglycerides in primary hyperlipidemia.",
+        "mechanism_of_action": "Competitive inhibitor of HMG-CoA reductase, the rate-limiting enzyme converting HMG-CoA to mevalonate in cholesterol biosynthesis.",
+        "targets": ["3-hydroxy-3-methylglutaryl-coenzyme A reductase (HMGCR)"]
+      },
+      "bioassays": {
+        "total_tested": 650,
+        "total_active": 15,
+        "active_assays": [
+          { "aid": 112001, "name": "HMG-CoA Reductase Activity Assay", "target": "HMGCR", "activity": "Active (IC50 8.2 nM)" }
+        ]
+      },
+      "analogs": [
+        { "cid": 446157, "iupac_name": "rosuvastatin", "molecular_formula": "C22H28FN3O6S", "similarity_score": 0.81 }
+      ],
+      "has_3d_conformer": true,
+      "conformer_3d_sdf": "60823\n  -OEChem-09152621003D\n\n 10  9  0     0  0  0  0  0  0999 V2000\n    0.0000    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.5000    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.2500    1.3000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.5000    2.6000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.0000    2.6000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.7500    1.3000    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n   -2.2000    1.3000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -2.9500    2.6000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -4.4500    2.6000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -5.2000    3.9000    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n  1  2  1  0  0  0  0\n  2  3  2  0  0  0  0\n  3  4  1  0  0  0  0\n  4  5  2  0  0  0  0\n  5  6  1  0  0  0  0\n  6  1  1  0  0  0  0\n  6  7  1  0  0  0  0\n  7  8  1  0  0  0  0\n  8  9  1  0  0  0  0\n  9 10  1  0  0  0  0\nM  END\n$$$$\n"
+    },
+    "77777777": {
+      "cid": 77777777,
+      "names": ["synthetic_flexible_polymer_edge", "flexipol"],
+      "canonical_smiles": "CCCCCCCCCCCC(=O)O",
+      "isomeric_smiles": "CCCCCCCCCCCC(=O)O",
+      "iupac_name": "dodecanoic acid synthetic test",
+      "molecular_formula": "C12H24O2",
+      "inchi": "InChI=1S/C12H24O2/c1-2-3-4-5-6-7-8-9-10-11-12(13)14/h2-11H2,1H3,(H,13,14)",
+      "inchi_key": "POULHZVOKOAJMA-UHFFFAOYSA-N",
+      "properties": {
+        "molecular_weight": 200.32,
+        "xlogp": 4.2,
+        "h_bond_donors": 1,
+        "h_bond_acceptors": 2,
+        "tpsa": 37.3,
+        "rotatable_bonds": 10,
+        "heavy_atoms": 14,
+        "exact_mass": 200.178,
+        "complexity": 114.0
+      },
+      "safety": {
+        "signal_word": "WARNING",
+        "hazard_statements": [
+          { "code": "H315", "statement": "Causes skin irritation" },
+          { "code": "H319", "statement": "Causes serious eye irritation" }
+        ],
+        "precautionary_statements": [
+          { "code": "P280", "statement": "Wear eye protection." }
+        ],
+        "pictograms": ["GHS07-harmful"]
+      },
+      "pharmacology": {
+        "indications": "Not clinically indicated as an active drug substance.",
+        "mechanism_of_action": "Fatty acid lipid substrate.",
+        "targets": []
+      },
+      "bioassays": {
+        "total_tested": 50,
+        "total_active": 0,
+        "active_assays": []
+      },
+      "analogs": [],
+      "has_3d_conformer": false,
+      "conformer_3d_sdf": null
+    },
+    "88888888": {
+      "cid": 88888888,
+      "names": ["synthetic_benign_sugar", "benignose"],
+      "canonical_smiles": "C(C1C(C(C(C(O1)O)O)O)O)O",
+      "isomeric_smiles": "C(C1C(C(C(C(O1)O)O)O)O)O",
+      "iupac_name": "6-(hydroxymethyl)oxane-2,3,4,5-tetrol",
+      "molecular_formula": "C6H12O6",
+      "inchi": "InChI=1S/C6H12O6/c7-1-2-3(8)4(9)5(10)6(11)12-2/h2-11H,1H2",
+      "inchi_key": "WQZGKKKJIJFFOK-UHFFFAOYSA-N",
+      "properties": {
+        "molecular_weight": 180.16,
+        "xlogp": -3.2,
+        "h_bond_donors": 5,
+        "h_bond_acceptors": 6,
+        "tpsa": 110.4,
+        "rotatable_bonds": 1,
+        "heavy_atoms": 12,
+        "exact_mass": 180.063,
+        "complexity": 102.0
+      },
+      "safety": {
+        "signal_word": "NOT_CLASSIFIED",
+        "hazard_statements": [],
+        "precautionary_statements": [],
+        "pictograms": []
+      },
+      "pharmacology": {
+        "indications": "Dietary nutrient and biochemical test substrate.",
+        "mechanism_of_action": "Carbohydrate metabolism substrate.",
+        "targets": ["Hexokinase-1"]
+      },
+      "bioassays": {
+        "total_tested": 120,
+        "total_active": 2,
+        "active_assays": [
+          { "aid": 999901, "name": "Hexokinase Phosphorylation Assay", "target": "HK1", "activity": "Active (Km 0.1 mM)" }
+        ]
+      },
+      "analogs": [],
+      "has_3d_conformer": true,
+      "conformer_3d_sdf": "88888888\n  -OEChem-09152621003D\n\n  6  6  0     0  0  0  0  0  0999 V2000\n    0.0000    1.4000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.2000    0.7000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.2000   -0.7000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.0000   -1.4000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.2000   -0.7000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.2000    0.7000    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n  1  2  1  0  0  0  0\n  2  3  1  0  0  0  0\n  3  4  1  0  0  0  0\n  4  5  1  0  0  0  0\n  5  6  1  0  0  0  0\n  6  1  1  0  0  0  0\nM  END\n$$$$\n"
+    }
+  }
+}

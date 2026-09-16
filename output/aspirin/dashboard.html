@@ -1,0 +1,2122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PubChem Molecular Evaluation Dashboard</title>
+  <style>
+    :root {
+      /* Theme Variables: Dark (Default) */
+      --bg-primary: #0a0e17;
+      --bg-secondary: #111827;
+      --bg-card: #151e2e;
+      --bg-hover: #1e293b;
+      --viewer-bg: #070b12;
+      --border-color: #243047;
+      --border-subtle: #1e293b;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent-blue: #38bdf8;
+      --accent-blue-bg: rgba(56, 189, 248, 0.12);
+      --accent-emerald: #34d399;
+      --accent-emerald-bg: rgba(52, 211, 153, 0.12);
+      --accent-amber: #fbbf24;
+      --accent-amber-bg: rgba(251, 191, 36, 0.12);
+      --accent-rose: #f87171;
+      --accent-rose-bg: rgba(248, 113, 113, 0.12);
+      --accent-purple: #c084fc;
+      --transition-speed: 0.2s;
+    }
+
+    body.light-theme {
+      /* Theme Variables: Light */
+      --bg-primary: #f8fafc;
+      --bg-secondary: #ffffff;
+      --bg-card: #ffffff;
+      --bg-hover: #f1f5f9;
+      --viewer-bg: #f8fafc;
+      --border-color: #e2e8f0;
+      --border-subtle: #f1f5f9;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --accent-blue: #0284c7;
+      --accent-blue-bg: rgba(2, 132, 199, 0.08);
+      --accent-emerald: #059669;
+      --accent-emerald-bg: rgba(5, 150, 105, 0.08);
+      --accent-amber: #d97706;
+      --accent-amber-bg: rgba(217, 119, 6, 0.08);
+      --accent-rose: #dc2626;
+      --accent-rose-bg: rgba(220, 38, 38, 0.08);
+      --accent-purple: #7c3aed;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.5;
+      padding: 24px;
+      transition: background-color var(--transition-speed), color var(--transition-speed);
+    }
+
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .header-title {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .header-title h1 {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--text-primary);
+    }
+
+    .header-title .subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-family: monospace;
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-badges {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .badge {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .badge-primary {
+      background-color: var(--accent-blue-bg);
+      color: var(--accent-blue);
+      border: 1px solid var(--accent-blue);
+    }
+
+    .badge-success {
+      background-color: var(--accent-emerald-bg);
+      color: var(--accent-emerald);
+      border: 1px solid var(--accent-emerald);
+    }
+
+    .badge-warning {
+      background-color: var(--accent-amber-bg);
+      color: var(--accent-amber);
+      border: 1px solid var(--accent-amber);
+    }
+
+    .badge-danger {
+      background-color: var(--accent-rose-bg);
+      color: var(--accent-rose);
+      border: 1px solid var(--accent-rose);
+    }
+
+    .badge-neutral {
+      background-color: var(--bg-hover);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-color);
+    }
+
+    /* Theme Toggle Button (Icon Only) */
+    .theme-toggle-btn {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition-speed) ease;
+      padding: 0;
+    }
+
+    .theme-toggle-btn:hover {
+      background: var(--bg-hover);
+      border-color: var(--accent-blue);
+    }
+
+    .theme-icon {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+    }
+
+    body.dark-theme .moon-icon {
+      display: none;
+    }
+    body.dark-theme .sun-icon {
+      display: block;
+    }
+
+    body.light-theme .sun-icon {
+      display: none;
+    }
+    body.light-theme .moon-icon {
+      display: block;
+    }
+
+    /* Grid Layouts */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 1024px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Cards */
+    .card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      transition: border-color var(--transition-speed);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 12px;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent-blue);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    /* Viewport Box */
+    .viewport-box {
+      position: relative;
+      width: 100%;
+      height: 420px;
+      background: var(--viewer-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: background-color var(--transition-speed);
+    }
+
+    #molviewer {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    #canvas-3d {
+      width: 100%;
+      height: 100%;
+      display: block;
+      cursor: grab;
+    }
+
+    #canvas-3d:active {
+      cursor: grabbing;
+    }
+
+    /* Viewport HUD */
+    .viewer-hud {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(15, 23, 42, 0.82);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-size: 11px;
+      font-family: monospace;
+      display: flex;
+      gap: 12px;
+      color: var(--text-secondary);
+      pointer-events: none;
+      z-index: 10;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    }
+
+    body.light-theme .viewer-hud {
+      background: rgba(255, 255, 255, 0.88);
+      border-color: rgba(203, 213, 225, 0.8);
+      color: #475569;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Floating Atom Inspector Tooltip */
+    .atom-tooltip {
+      position: absolute;
+      background: var(--bg-card);
+      border: 1px solid var(--accent-blue);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 11px;
+      pointer-events: none;
+      z-index: 25;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+      min-width: 180px;
+      display: none;
+      transform: translate(14px, 14px);
+    }
+
+    .atom-tooltip-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--text-primary);
+    }
+
+    .atom-tooltip-badge {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .atom-tooltip-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .atom-tooltip-row strong {
+      color: var(--text-primary);
+      font-family: monospace;
+    }
+
+    /* Stable Multi-Row Toolbar Layout */
+    .viewer-toolbar-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .viewer-toolbar-row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 0 12px;
+      height: 32px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      white-space: nowrap;
+      user-select: none;
+      box-sizing: border-box;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .btn:hover {
+      background-color: var(--bg-hover);
+      border-color: var(--accent-blue);
+    }
+
+    .btn.active {
+      background-color: var(--accent-blue-bg);
+      color: var(--accent-blue);
+      border-color: var(--accent-blue);
+    }
+
+    /* Fixed button geometries preventing physical reflow & shifting */
+    .fixed-label-btn {
+      width: 110px;
+      min-width: 110px;
+      max-width: 110px;
+    }
+
+    #btn-measure {
+      width: 80px;
+      min-width: 80px;
+      max-width: 80px;
+    }
+
+    #btn-spin {
+      width: 65px;
+      min-width: 65px;
+      max-width: 65px;
+    }
+
+    .viewport-instructions {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .measure-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: monospace;
+      background: var(--accent-amber-bg);
+      color: var(--accent-amber);
+      border: 1px solid var(--accent-amber);
+    }
+
+    /* Data Tables */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .data-table th, .data-table td {
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .data-table th {
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .data-table td {
+      color: var(--text-primary);
+    }
+
+    .data-table tr:hover {
+      background-color: var(--bg-hover);
+    }
+
+    .code-cell {
+      font-family: monospace;
+      color: var(--accent-blue);
+      word-break: break-all;
+    }
+
+    /* Key Value Lists & Copy Buttons */
+    .kv-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .kv-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 13px;
+    }
+
+    .kv-key {
+      color: var(--text-secondary);
+    }
+
+    .kv-val-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .kv-val {
+      font-weight: 600;
+      color: var(--text-primary);
+      font-family: monospace;
+    }
+
+    .copy-btn {
+      background: none;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      padding: 3px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s;
+    }
+
+    .copy-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--accent-blue);
+    }
+
+    .copy-btn.copied {
+      color: var(--accent-emerald);
+      border-color: var(--accent-emerald);
+    }
+
+    /* Radar Chart Container */
+    .chart-box {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px 0;
+    }
+
+    .section-text {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .pill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .pill {
+      font-size: 12px;
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      padding: 3px 10px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body class="dark-theme">
+  <div class="container">
+    <!-- Header with Chemical Identifiers and Theme Toggle -->
+    <header>
+      <div class="header-title">
+        <h1 id="compound-name">PubChem Molecular Dashboard</h1>
+        <div class="subtitle" id="compound-subtitle">Loading chemical entity data...</div>
+      </div>
+      <div class="header-controls">
+        <div class="header-badges">
+          <span class="badge badge-primary" id="badge-cid">CID: -</span>
+          <span class="badge" id="badge-ro5">Ro5: -</span>
+          <span class="badge" id="badge-ghs">GHS: -</span>
+        </div>
+        <!-- Light / Dark Mode Toggle (Clean Icon Only) -->
+        <button class="theme-toggle-btn" id="theme-toggle-btn" onclick="toggleTheme()" title="Toggle Light / Dark Theme">
+          <!-- Sun Icon (Active in Dark Mode to switch to Light) -->
+          <svg class="theme-icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <!-- Moon Icon (Active in Light Mode to switch to Dark) -->
+          <svg class="theme-icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Top Grid: Interactive Molecular Visualization & Properties -->
+    <div class="grid-2">
+      <!-- Unified 3D Molecular View Card -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">3D Molecular View</div>
+          <span id="vis-status-tag" class="badge badge-primary">3D Conformer</span>
+        </div>
+
+        <div class="viewport-box">
+          <div id="molviewer">
+            <canvas id="canvas-3d"></canvas>
+          </div>
+          <!-- Hidden canvas for backward compatibility -->
+          <canvas id="physics-canvas" style="display: none;"></canvas>
+
+          <!-- Floating Viewport HUD -->
+          <div class="viewer-hud" id="viewer-hud">
+            <span id="hud-atoms">- Atoms</span>
+            <span id="hud-bonds">- Bonds</span>
+            <span id="hud-zoom">100%</span>
+          </div>
+
+          <!-- Atom Inspector Tooltip -->
+          <div class="atom-tooltip" id="atom-tooltip"></div>
+        </div>
+
+        <!-- Stable Structured Toolbar -->
+        <div class="viewer-toolbar-container">
+          <!-- Row 1: Visual Representation Modes & Labels -->
+          <div class="viewer-toolbar-row">
+            <button class="btn active" id="btn-ballstick" onclick="setStyle('ballstick')">Ball & Stick</button>
+            <button class="btn" id="btn-stick" onclick="setStyle('stick')">Stick</button>
+            <button class="btn" id="btn-sphere" onclick="setStyle('sphere')">Spacefill</button>
+            <button class="btn" id="btn-wireframe" onclick="setStyle('line')">Wireframe</button>
+            <button class="btn" id="btn-surface" onclick="toggleSurface()">Surface</button>
+            <button class="btn fixed-label-btn" id="btn-label-toggle" onclick="toggleLabels()">Labels: Symbol</button>
+          </div>
+
+          <!-- Row 2: Interactive Tools & Camera Navigation -->
+          <div class="viewer-toolbar-row">
+            <button class="btn" id="btn-measure" onclick="toggleMeasurement()">Measure</button>
+            <button class="btn" id="btn-spin" onclick="toggleSpin()">Spin</button>
+            <button class="btn" id="btn-zoom-in" onclick="zoomView(1.15)" title="Zoom In">Zoom In (+)</button>
+            <button class="btn" id="btn-zoom-out" onclick="zoomView(0.85)" title="Zoom Out">Zoom Out (-)</button>
+            <button class="btn" id="btn-rotate-left" onclick="rotateViewY(-15)" title="Rotate Left">Rotate Left</button>
+            <button class="btn" id="btn-rotate-right" onclick="rotateViewY(15)" title="Rotate Right">Rotate Right</button>
+            <button class="btn" id="btn-center" onclick="resetView()" title="Center & Reset View">Center</button>
+            <button class="btn" id="btn-export" onclick="exportSnapshot()" title="Export PNG Snapshot">Export PNG</button>
+          </div>
+        </div>
+
+        <!-- Instructions and Active Measurement Feedback Bar -->
+        <div class="viewport-instructions">
+          <span id="nav-instructions">Left-click + drag to orbit &bull; Right-click / Shift + drag to pan &bull; Scroll to zoom &bull; Hover over atoms for details</span>
+          <span id="measurement-hint" class="measure-status-badge" style="display: none;">Click 2 atoms to measure distance</span>
+        </div>
+      </div>
+
+      <!-- Physicochemical Properties & Descriptors -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Physicochemical Descriptors</div>
+          <span style="font-size: 11px; color: var(--text-secondary);">Computed via PubChem</span>
+        </div>
+        <div class="kv-list" id="properties-list">
+          <!-- Injected via JavaScript -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Middle Grid: Drug-Likeness Assessment & Radar Chart -->
+    <div class="grid-2">
+      <!-- Radar Chart Card -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Oral Drug-Likeness Radar</div>
+          <span style="font-size: 11px; color: var(--accent-emerald);">Lipinski & Veber Domain</span>
+        </div>
+        <div class="chart-box">
+          <svg id="radar-svg" width="340" height="340" viewBox="0 0 340 340"></svg>
+        </div>
+        <div style="font-size: 12px; color: var(--text-muted); text-align: center;">
+          Dashed boundary indicates oral bioavailability threshold. Shaded polygon indicates target compound.
+        </div>
+      </div>
+
+      <!-- Medicinal Chemistry Rule Compliance -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Medicinal Chemistry Assessment</div>
+        </div>
+        <div>
+          <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--accent-emerald);">Lipinski Rule of Five (Ro5)</h4>
+          <div class="kv-list" style="margin-bottom: 16px;">
+            <div class="kv-item">
+              <span class="kv-key">Compliance Status</span>
+              <span class="kv-val" id="ro5-status">-</span>
+            </div>
+            <div class="kv-item">
+              <span class="kv-key">Violation Count</span>
+              <span class="kv-val" id="ro5-violations">-</span>
+            </div>
+            <div class="kv-item">
+              <span class="kv-key">Specific Boundary Flags</span>
+              <span class="kv-val" id="ro5-details" style="font-family: inherit; font-size: 12px;">None</span>
+            </div>
+          </div>
+
+          <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--accent-purple);">Veber Oral Bioavailability Criteria</h4>
+          <div class="kv-list">
+            <div class="kv-item">
+              <span class="kv-key">Compliance Status</span>
+              <span class="kv-val" id="veber-status">-</span>
+            </div>
+            <div class="kv-item">
+              <span class="kv-key">Violation Count</span>
+              <span class="kv-val" id="veber-violations">-</span>
+            </div>
+            <div class="kv-item">
+              <span class="kv-key">Specific Boundary Flags</span>
+              <span class="kv-val" id="veber-details" style="font-family: inherit; font-size: 12px;">None</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Safety & Pharmacology Grid -->
+    <div class="grid-2">
+      <!-- GHS Hazard Safety Card -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">GHS Safety & Hazard Analysis</div>
+          <span class="badge" id="safety-signal-badge">SIGNAL: -</span>
+        </div>
+        <div>
+          <div style="font-size: 12px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 6px;">Hazard Statements</div>
+          <div class="pill-list" id="hazard-statements" style="margin-bottom: 16px;">
+            <!-- Injected via JavaScript -->
+          </div>
+          <div style="font-size: 12px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 6px;">Precautionary Codes</div>
+          <div class="pill-list" id="precautionary-statements">
+            <!-- Injected via JavaScript -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Clinical Pharmacology & Mechanism -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Clinical Pharmacology</div>
+          <span style="font-size: 11px; color: var(--accent-blue);">Mechanism & Target</span>
+        </div>
+        <div>
+          <div style="margin-bottom: 14px;">
+            <div style="font-size: 12px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 4px;">Primary Mechanism of Action</div>
+            <div class="section-text" id="pharma-moa">-</div>
+          </div>
+          <div style="margin-bottom: 14px;">
+            <div style="font-size: 12px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 4px;">Therapeutic Indications</div>
+            <div class="section-text" id="pharma-indications">-</div>
+          </div>
+          <div>
+            <div style="font-size: 12px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 4px;">Biological Targets</div>
+            <div class="pill-list" id="pharma-targets">
+              <!-- Injected via JavaScript -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Grid: BioAssays & Structural Analogs -->
+    <div class="grid-2">
+      <!-- BioAssay Activity Card -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">PubChem BioAssay Activity</div>
+          <span style="font-size: 11px; color: var(--text-secondary);" id="bioassay-ratio">Tested: - | Active: -</span>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>AID</th>
+              <th>Assay Target / Assay Description</th>
+              <th>Activity Metric</th>
+            </tr>
+          </thead>
+          <tbody id="bioassays-tbody">
+            <!-- Injected via JavaScript -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Structural Analogs Card -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Similar Chemical Analogs</div>
+          <span style="font-size: 11px; color: var(--text-secondary);">2D Tanimoto Similarity</span>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>CID</th>
+              <th>Nomenclature</th>
+              <th>Formula</th>
+              <th>Similarity</th>
+            </tr>
+          </thead>
+          <tbody id="analogs-tbody">
+            <!-- Injected via JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <span>PubChem Database Visualizer</span>
+      <span>Chemical Informatics & Molecular Evaluation</span>
+    </footer>
+  </div>
+
+  <script>
+    // Data Payloads injected by pipeline
+    const DATA = {"cid": 2244, "identifiers": {"iupac_name": "2-acetyloxybenzoic acid", "canonical_smiles": "CC(=O)OC1=CC=CC=C1C(=O)O", "isomeric_smiles": "CC(=O)OC1=CC=CC=C1C(=O)O", "molecular_formula": "C9H8O4", "inchi": "InChI=1S/C9H8O4/c1-6(10)13-8-5-3-2-4-7(8)9(11)12/h2-5H,1H3,(H,11,12)", "inchi_key": "BSYNRYMUTXBXSQ-UHFFFAOYSA-N", "query_input": "aspirin"}, "properties": {"molecular_weight": 180.16, "xlogp": 1.2, "h_bond_donors": 1, "h_bond_acceptors": 4, "tpsa": 63.6, "rotatable_bonds": 2, "heavy_atoms": 13, "exact_mass": 180.042, "complexity": 212.0}, "drug_likeness": {"lipinski_rule_of_five": {"compliant": true, "violations": 0, "violation_details": [], "status": "COMPLIANT"}, "veber_rule": {"compliant": true, "violations": 0, "violation_details": [], "status": "COMPLIANT"}}, "safety": {"signal_word": "WARNING", "hazard_statements": [{"code": "H302", "statement": "Harmful if swallowed"}, {"code": "H315", "statement": "Causes skin irritation"}, {"code": "H319", "statement": "Causes serious eye irritation"}], "precautionary_statements": [{"code": "P264", "statement": "Wash hands thoroughly after handling."}, {"code": "P280", "statement": "Wear protective gloves and eye protection."}, {"code": "P301+P312", "statement": "IF SWALLOWED: Call a POISON CENTER/doctor if you feel unwell."}], "pictograms": ["GHS07-harmful"]}, "pharmacology": {"indications": "Indicated for the relief of mild to moderate pain, fever, and inflammation, as well as prevention of thrombotic cardiovascular events.", "mechanism_of_action": "Irreversibly inhibits cyclooxygenase-1 (COX-1) and modifies the enzymatic activity of cyclooxygenase-2 (COX-2), leading to reduced synthesis of prostaglandins and thromboxanes.", "targets": ["Cyclooxygenase-1 (PTGS1)", "Cyclooxygenase-2 (PTGS2)", "Prostaglandin E synthase"]}, "bioassays": {"total_tested": 1420, "total_active": 18, "active_assays": [{"aid": 1259253, "name": "COX-1 Inhibition Fluorometric Assay", "target": "PTGS1", "activity": "Active (IC50 4.1 uM)"}, {"aid": 1259254, "name": "COX-2 Inhibition Chemiluminescence Assay", "target": "PTGS2", "activity": "Active (IC50 25.0 uM)"}, {"aid": 651635, "name": "Platelet Aggregation Inhibition Assay", "target": "Thromboxane A2 Synthase", "activity": "Active (EC50 12.5 uM)"}]}, "analogs": [{"cid": 338, "iupac_name": "salicylic acid", "molecular_formula": "C7H6O3", "similarity_score": 0.89}, {"cid": 5080, "iupac_name": "diflunisal", "molecular_formula": "C13H8F2O3", "similarity_score": 0.86}, {"cid": 1983, "iupac_name": "acetaminophen", "molecular_formula": "C8H9NO2", "similarity_score": 0.74}], "has_3d_conformer": true};
+    const SDF_3D = "2244\n  -OEChem-09152621003D\n\n 13 13  0     0  0  0  0  0  0999 V2000\n   -0.5480    1.3480    0.0220 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.7320    0.7960   -0.0030 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.8460    1.6370    0.0010 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.6910    3.0130    0.0290 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.4190    3.5570    0.0530 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.6970    2.7230    0.0490 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.8990   -0.6720   -0.0350 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.0070   -1.1680   -0.0390 O   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.2010   -1.4280   -0.0590 O   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.6880    0.5470    0.0160 O   0  0  0  0  0  0  0  0  0  0  0  0\n   -2.0220   -0.3440   -0.9630 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.3780   -0.5750   -1.9560 O   0  0  0  0  0  0  0  0  0  0  0  0\n   -3.3280   -1.0770   -0.7020 C   0  0  0  0  0  0  0  0  0  0  0  0\n  1  2  2  0  0  0  0\n  2  3  1  0  0  0  0\n  3  4  2  0  0  0  0\n  4  5  1  0  0  0  0\n  5  6  2  0  0  0  0\n  6  1  1  0  0  0  0\n  2  7  1  0  0  0  0\n  7  8  2  0  0  0  0\n  7  9  1  0  0  0  0\n  1 10  1  0  0  0  0\n 10 11  1  0  0  0  0\n 11 12  2  0  0  0  0\n 11 13  1  0  0  0  0\nM  END\n$$$$\n";
+
+    let viewer = null;
+    let currentStyle = 'ballstick';
+
+    // ==========================================
+    // 1. THEME ENGINE (LIGHT / DARK TOGGLE)
+    // ==========================================
+    function initTheme() {
+      const savedTheme = localStorage.getItem('theme_preference') || 'dark';
+      setTheme(savedTheme);
+    }
+
+    function toggleTheme() {
+      const isDark = document.body.classList.contains('dark-theme');
+      const newTheme = isDark ? 'light' : 'dark';
+      setTheme(newTheme);
+    }
+
+    function setTheme(theme) {
+      if (theme === 'light') {
+        document.body.classList.remove('dark-theme');
+        document.body.classList.add('light-theme');
+        localStorage.setItem('theme_preference', 'light');
+      } else {
+        document.body.classList.remove('light-theme');
+        document.body.classList.add('dark-theme');
+        localStorage.setItem('theme_preference', 'dark');
+      }
+      if (window.viewer3d) {
+        window.viewer3d.setTheme(theme);
+      }
+      renderRadarChart(DATA ? DATA.properties : null);
+    }
+
+    // ==========================================
+    // 2. COPY TO CLIPBOARD HELPER
+    // ==========================================
+    function copyText(btn, text) {
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        const origText = btn.textContent;
+        btn.textContent = 'Copied';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = origText;
+          btn.classList.remove('copied');
+        }, 1800);
+      }).catch(err => {
+        console.error('Clipboard copy failed:', err);
+      });
+    }
+
+    // ==========================================
+    // 3. MAIN INITIALIZATION
+    // ==========================================
+    function init() {
+      initTheme();
+
+      if (!DATA) {
+        document.getElementById('compound-name').textContent = 'No Compound Data Loaded';
+        return;
+      }
+
+      // Populate Header
+      document.getElementById('compound-name').textContent = DATA.identifiers.iupac_name || 'Compound Profile';
+      document.getElementById('compound-subtitle').textContent = 
+        `CID: ${DATA.cid} | Formula: ${DATA.identifiers.molecular_formula} | InChIKey: ${DATA.identifiers.inchi_key}`;
+      document.getElementById('badge-cid').textContent = `CID: ${DATA.cid}`;
+
+      // Ro5 Badge
+      const ro5Badge = document.getElementById('badge-ro5');
+      const ro5Status = DATA.drug_likeness.lipinski_rule_of_five.status;
+      ro5Badge.textContent = `Ro5: ${ro5Status}`;
+      if (ro5Status === 'COMPLIANT') ro5Badge.className = 'badge badge-success';
+      else if (ro5Status === 'BORDERLINE') ro5Badge.className = 'badge badge-warning';
+      else ro5Badge.className = 'badge badge-danger';
+
+      // GHS Badge
+      const ghsBadge = document.getElementById('badge-ghs');
+      const signalWord = (DATA.safety && DATA.safety.signal_word) || 'NOT_CLASSIFIED';
+      ghsBadge.textContent = `GHS: ${signalWord}`;
+      if (signalWord === 'DANGER') ghsBadge.className = 'badge badge-danger';
+      else if (signalWord === 'WARNING') ghsBadge.className = 'badge badge-warning';
+      else ghsBadge.className = 'badge badge-neutral';
+
+      // Populate Descriptors
+      const propsList = document.getElementById('properties-list');
+      const p = DATA.properties;
+      const ids = DATA.identifiers;
+      propsList.innerHTML = `
+        <div class="kv-item">
+          <span class="kv-key">IUPAC Name</span>
+          <span class="kv-val" style="font-family: inherit; font-size: 12px; text-align: right; max-width: 260px;">${ids.iupac_name || '-'}</span>
+        </div>
+        <div class="kv-item">
+          <span class="kv-key">Molecular Formula</span>
+          <div class="kv-val-group">
+            <span class="kv-val">${ids.molecular_formula || '-'}</span>
+            <button class="copy-btn" onclick="copyText(this, '${ids.molecular_formula}')">Copy</button>
+          </div>
+        </div>
+        <div class="kv-item">
+          <span class="kv-key">Canonical SMILES</span>
+          <div class="kv-val-group">
+            <span class="kv-val code-cell" style="font-size: 11px; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${ids.canonical_smiles || '-'}</span>
+            <button class="copy-btn" onclick="copyText(this, '${ids.canonical_smiles}')">Copy</button>
+          </div>
+        </div>
+        <div class="kv-item">
+          <span class="kv-key">InChIKey</span>
+          <div class="kv-val-group">
+            <span class="kv-val code-cell" style="font-size: 11px;">${ids.inchi_key || '-'}</span>
+            <button class="copy-btn" onclick="copyText(this, '${ids.inchi_key}')">Copy</button>
+          </div>
+        </div>
+        <div class="kv-item">
+          <span class="kv-key">Molecular Weight</span>
+          <span class="kv-val">${p.molecular_weight !== null ? p.molecular_weight.toFixed(2) + ' g/mol' : '-'}</span>
+        </div>
+        <div class="kv-item">
+          <span class="kv-key">Partition Coefficient (XLogP)</span>
+          <span class="kv-val">${p.xlogp !== null ? p.xlogp.toFixed(2) : 'N/A'}</span>
+        </div>
+        <div class="kv-item">
+          <span class="kv-key">Hydrogen Bond Donors (HBD)</span>
+          <span class="kv-val">${p.h_bond_donors !== null ? p.h_bond_donors : '-'}</span>
+        </div>
+        <div class="kv-item">
+          <span class="kv-key">Hydrogen Bond Acceptors (HBA)</span>
+          <span class="kv-val">${p.h_bond_acceptors !== null ? p.h_bond_acceptors : '-'}</span>
+        </div>
+        <div class="kv-item">
+          <span class="kv-key">Polar Surface Area (TPSA)</span>
+          <span class="kv-val">${p.tpsa !== null ? p.tpsa.toFixed(1) + ' Å²' : '-'}</span>
+        </div>
+        <div class="kv-item">
+          <span class="kv-key">Rotatable Bonds</span>
+          <span class="kv-val">${p.rotatable_bonds !== null ? p.rotatable_bonds : '-'}</span>
+        </div>
+        <div class="kv-item">
+          <span class="kv-key">Heavy Atom Count</span>
+          <span class="kv-val">${p.heavy_atoms !== null ? p.heavy_atoms : '-'}</span>
+        </div>
+        <div class="kv-item">
+          <span class="kv-key">Structural Complexity</span>
+          <span class="kv-val">${p.complexity !== null ? p.complexity.toFixed(1) : '-'}</span>
+        </div>
+      `;
+
+      // Populate Ro5 & Veber Compliance
+      const ro5 = DATA.drug_likeness.lipinski_rule_of_five;
+      const veber = DATA.drug_likeness.veber_rule;
+
+      document.getElementById('ro5-status').textContent = ro5.status;
+      document.getElementById('ro5-status').style.color = ro5.compliant ? 'var(--accent-emerald)' : 'var(--accent-rose)';
+      document.getElementById('ro5-violations').textContent = `${ro5.violations} / 4`;
+      document.getElementById('ro5-details').textContent = ro5.violation_details.length > 0 ? ro5.violation_details.join('; ') : 'All 4 physicochemical thresholds satisfied';
+
+      document.getElementById('veber-status').textContent = veber.status;
+      document.getElementById('veber-status').style.color = veber.compliant ? 'var(--accent-emerald)' : 'var(--accent-rose)';
+      document.getElementById('veber-violations').textContent = `${veber.violations} / 2`;
+      document.getElementById('veber-details').textContent = veber.violation_details.length > 0 ? veber.violation_details.join('; ') : 'Both rotatable bonds (≤10) and TPSA (≤140 Å²) satisfied';
+
+      // Render Radar Chart
+      renderRadarChart(p);
+
+      // Populate Safety
+      const safetyBadge = document.getElementById('safety-signal-badge');
+      safetyBadge.textContent = `SIGNAL: ${signalWord}`;
+      safetyBadge.className = signalWord === 'DANGER' ? 'badge badge-danger' : (signalWord === 'WARNING' ? 'badge badge-warning' : 'badge badge-neutral');
+
+      const hazardDiv = document.getElementById('hazard-statements');
+      if (DATA.safety && DATA.safety.hazard_statements && DATA.safety.hazard_statements.length > 0) {
+        hazardDiv.innerHTML = DATA.safety.hazard_statements.map(h => 
+          `<span class="pill" style="border-color: var(--accent-rose); color: var(--accent-rose);">${h.code}: ${h.statement}</span>`
+        ).join('');
+      } else {
+        hazardDiv.innerHTML = '<span class="section-text">No GHS hazard statements classified.</span>';
+      }
+
+      const precDiv = document.getElementById('precautionary-statements');
+      if (DATA.safety && DATA.safety.precautionary_statements && DATA.safety.precautionary_statements.length > 0) {
+        precDiv.innerHTML = DATA.safety.precautionary_statements.map(pc => 
+          `<span class="pill">${pc}</span>`
+        ).join('');
+      } else {
+        precDiv.innerHTML = '<span class="section-text">No precautionary codes reported.</span>';
+      }
+
+      // Populate Pharmacology
+      const pharma = DATA.pharmacology || {};
+      document.getElementById('pharma-moa').textContent = pharma.mechanism_of_action || 'Specific enzymatic or receptor mechanism not documented in current dataset.';
+      document.getElementById('pharma-indications').textContent = pharma.indications || 'Approved indications not cataloged or investigational entity.';
+      
+      const targetsDiv = document.getElementById('pharma-targets');
+      if (pharma.targets && pharma.targets.length > 0) {
+        targetsDiv.innerHTML = pharma.targets.map(t => `<span class="pill" style="border-color: var(--accent-blue); color: var(--accent-blue);">${t}</span>`).join('');
+      } else {
+        targetsDiv.innerHTML = '<span class="section-text">No primary biological targets cataloged.</span>';
+      }
+
+      // Populate BioAssays
+      const bio = DATA.bioassays || {};
+      document.getElementById('bioassay-ratio').textContent = `Tested: ${bio.total_tested || 0} | Active Hits: ${bio.total_active || 0}`;
+      const assayTbody = document.getElementById('bioassays-tbody');
+      if (bio.active_assays && bio.active_assays.length > 0) {
+        assayTbody.innerHTML = bio.active_assays.map(a => `
+          <tr>
+            <td class="code-cell">${a.aid}</td>
+            <td>${a.target || a.name || 'BioAssay Screen'}</td>
+            <td><span class="badge badge-success">${a.activity}</span></td>
+          </tr>
+        `).join('');
+      } else {
+        assayTbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--text-muted); padding: 16px;">No active bioassay hits reported</td></tr>';
+      }
+
+      // Populate Analogs
+      const analogTbody = document.getElementById('analogs-tbody');
+      if (DATA.analogs && DATA.analogs.length > 0) {
+        analogTbody.innerHTML = DATA.analogs.map(an => `
+          <tr>
+            <td class="code-cell">${an.cid}</td>
+            <td>${an.iupac_name}</td>
+            <td>${an.molecular_formula}</td>
+            <td><strong>${(an.similarity_score * 100).toFixed(1)}%</strong></td>
+          </tr>
+        `).join('');
+      } else {
+        analogTbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 16px;">No structural analogs identified</td></tr>';
+      }
+
+      // Initialize Unified High-Resolution 3D Molecular Viewer
+      initUnified3DViewer();
+    }
+
+    // ==========================================
+    // 4. UNIFIED HIGH-RESOLUTION 3D VIEWER
+    // ==========================================
+    function initUnified3DViewer() {
+      window.viewer3d = new Molecule3DViewer('molviewer');
+      window.physicsEngine = window.viewer3d;
+    }
+
+    function setStyle(styleType) {
+      currentStyle = styleType;
+      document.querySelectorAll('.viewer-toolbar-row .btn').forEach(b => {
+        if (['btn-ballstick', 'btn-stick', 'btn-sphere', 'btn-wireframe'].includes(b.id)) {
+          b.classList.remove('active');
+        }
+      });
+      const btnMap = { 'ballstick': 'btn-ballstick', 'stick': 'btn-stick', 'sphere': 'btn-sphere', 'line': 'btn-wireframe' };
+      const activeBtn = document.getElementById(btnMap[styleType] || `btn-${styleType}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      if (window.viewer3d) {
+        window.viewer3d.setStyle(styleType);
+      }
+    }
+
+    function toggleSurface() {
+      if (window.viewer3d) {
+        const active = window.viewer3d.toggleSurface();
+        const btn = document.getElementById('btn-surface');
+        if (btn) btn.classList.toggle('active', active);
+      }
+    }
+
+    function toggleSpin() {
+      if (window.viewer3d) {
+        const active = window.viewer3d.toggleSpin();
+        const btn = document.getElementById('btn-spin');
+        if (btn) btn.classList.toggle('active', active);
+      }
+    }
+
+    function toggleMeasurement() {
+      if (window.viewer3d) {
+        const active = window.viewer3d.toggleMeasurement();
+        const btn = document.getElementById('btn-measure');
+        const hint = document.getElementById('measurement-hint');
+        if (btn) {
+          btn.classList.toggle('active', active);
+          btn.textContent = 'Measure'; // Rigid button text, never shifts physically
+        }
+        if (hint) {
+          hint.style.display = active ? 'inline-flex' : 'none';
+          hint.textContent = 'Click 2 atoms to measure distance';
+        }
+      }
+    }
+
+    function toggleLabels() {
+      if (window.viewer3d) {
+        const mode = window.viewer3d.toggleLabelMode();
+        const btn = document.getElementById('btn-label-toggle');
+        if (btn) {
+          const modeLabels = { 'symbol': 'Labels: Symbol', 'index': 'Labels: Index', 'full': 'Labels: Full', 'none': 'Labels: Off' };
+          btn.textContent = modeLabels[mode] || 'Labels';
+          btn.classList.toggle('active', mode !== 'none');
+        }
+      }
+    }
+
+    function zoomView(factor) {
+      if (window.viewer3d) {
+        window.viewer3d.stepZoom(factor);
+      }
+    }
+
+    function rotateViewY(deg) {
+      if (window.viewer3d) {
+        window.viewer3d.stepRotateY(deg);
+      }
+    }
+
+    function resetView() {
+      if (window.viewer3d) {
+        window.viewer3d.resetView();
+      }
+    }
+
+    function exportSnapshot() {
+      if (window.viewer3d) {
+        window.viewer3d.exportSnapshot();
+      }
+    }
+
+    function switchVisTab(tabKey) {
+      // Compatibility stub
+      if (window.viewer3d) {
+        window.viewer3d.render();
+      }
+    }
+
+    // ==========================================
+    // 5. HIGH-RESOLUTION 3D MOLECULAR ENGINE
+    // ==========================================
+    const ELEMENT_REGISTRY = {
+      'H':  { name: 'Hydrogen',   vdw: 1.20, colorDark: '#f1f5f9', colorLight: '#cbd5e1', valence: 1 },
+      'C':  { name: 'Carbon',     vdw: 1.70, colorDark: '#94a3b8', colorLight: '#475569', valence: 4 },
+      'N':  { name: 'Nitrogen',   vdw: 1.55, colorDark: '#38bdf8', colorLight: '#0284c7', valence: 3 },
+      'O':  { name: 'Oxygen',     vdw: 1.52, colorDark: '#f87171', colorLight: '#dc2626', valence: 2 },
+      'F':  { name: 'Fluorine',   vdw: 1.47, colorDark: '#2dd4bf', colorLight: '#0d9488', valence: 1 },
+      'P':  { name: 'Phosphorus', vdw: 1.80, colorDark: '#fb923c', colorLight: '#ea580c', valence: 5 },
+      'S':  { name: 'Sulfur',     vdw: 1.80, colorDark: '#fbbf24', colorLight: '#d97706', valence: 2 },
+      'Cl': { name: 'Chlorine',   vdw: 1.75, colorDark: '#4ade80', colorLight: '#16a34a', valence: 1 },
+      'Br': { name: 'Bromine',    vdw: 1.85, colorDark: '#c084fc', colorLight: '#9333ea', valence: 1 },
+      'I':  { name: 'Iodine',     vdw: 1.98, colorDark: '#e879f9', colorLight: '#a21caf', valence: 1 }
+    };
+
+    class Molecule3DViewer {
+      constructor(containerId) {
+        this.container = document.getElementById(containerId);
+        if (!this.container) return;
+        
+        let canvas = document.getElementById('canvas-3d');
+        if (!canvas) {
+          this.container.innerHTML = '<canvas id="canvas-3d"></canvas>';
+          canvas = document.getElementById('canvas-3d');
+        }
+        this.canvas = canvas;
+        this.ctx = this.canvas.getContext('2d');
+
+        this.atoms = [];
+        this.bonds = [];
+        this.rotX = 0.35;
+        this.rotY = -0.55;
+        this.panX = 0;
+        this.panY = 0;
+        this.scale = 35;
+        this.zoom = 1.0;
+        this.style = currentStyle || 'ballstick';
+        this.labelMode = 'symbol'; // 'symbol', 'index', 'full', 'none'
+        this.isSpinning = false;
+        this.isMeasuring = false;
+        this.showSurface = false;
+        this.measureAtoms = [];
+        this.measurementDistance = null;
+        this.hoveredAtom = null;
+
+        // Interaction physics (inertia)
+        this.isDragging = false;
+        this.dragButton = 0;
+        this.lastMouse = { x: 0, y: 0 };
+        this.velX = 0;
+        this.velY = 0;
+        this.spinFrame = null;
+        this.inertiaFrame = null;
+
+        this.tooltip = document.getElementById('atom-tooltip');
+
+        this.setupDPI();
+        this.parseSDF(SDF_3D);
+        this.bindEvents();
+        this.updateHUD();
+        this.render();
+
+        if (window.ResizeObserver && this.container.parentElement) {
+          const ro = new ResizeObserver(() => {
+            this.resize();
+            this.render();
+          });
+          ro.observe(this.container.parentElement);
+        }
+      }
+
+      setupDPI() {
+        const rect = this.container.getBoundingClientRect();
+        const w = rect.width > 20 ? rect.width : (this.container.offsetWidth || 600);
+        const h = rect.height > 20 ? rect.height : (this.container.offsetHeight || 420);
+        const dpr = Math.min(window.devicePixelRatio || 1, 3);
+        
+        this.canvas.width = Math.round(w * dpr);
+        this.canvas.height = Math.round(h * dpr);
+        this.width = w;
+        this.height = h;
+        this.dpr = dpr;
+        this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      resize() {
+        this.setupDPI();
+        this.fitToViewport();
+      }
+
+      fitToViewport() {
+        if (this.atoms.length === 0) return;
+        let maxR = 0;
+        for (let a of this.atoms) {
+          const d = Math.hypot(a.x, a.y, a.z);
+          if (d > maxR) maxR = d;
+        }
+        if (maxR < 0.1) maxR = 1.0;
+        const targetRadius = Math.min(this.width, this.height) * 0.36;
+        this.scale = (targetRadius / maxR) * this.zoom;
+        this.updateHUD();
+      }
+
+      parseSDF(sdfStr) {
+        this.atoms = [];
+        this.bonds = [];
+
+        if (sdfStr && typeof sdfStr === 'string' && sdfStr.includes('V2000')) {
+          const lines = sdfStr.split('\n');
+          let countsLineIdx = -1;
+          for (let i = 0; i < Math.min(lines.length, 14); i++) {
+            if (lines[i].includes('V2000')) {
+              countsLineIdx = i;
+              break;
+            }
+          }
+          if (countsLineIdx !== -1) {
+            const countsLine = lines[countsLineIdx];
+            const numAtoms = parseInt(countsLine.substring(0, 3).trim(), 10);
+            const numBonds = parseInt(countsLine.substring(3, 6).trim(), 10);
+            const atomStart = countsLineIdx + 1;
+
+            let sumX = 0, sumY = 0, sumZ = 0;
+            for (let a = 0; a < numAtoms; a++) {
+              const line = lines[atomStart + a];
+              if (!line) break;
+              const parts = line.trim().split(/\s+/);
+              const x = parseFloat(parts[0]) || 0;
+              const y = parseFloat(parts[1]) || 0;
+              const z = parseFloat(parts[2]) || 0;
+              const sym = parts[3] || 'C';
+
+              sumX += x; sumY += y; sumZ += z;
+              this.atoms.push({
+                index: a + 1,
+                symbol: sym,
+                x: x,
+                y: y,
+                z: z,
+                origX: x, origY: y, origZ: z,
+                bonds: [],
+                meta: ELEMENT_REGISTRY[sym] || { name: sym, vdw: 1.6, colorDark: '#94a3b8', colorLight: '#475569', valence: 1 }
+              });
+            }
+
+            // Center atoms strictly around 3D centroid
+            if (this.atoms.length > 0) {
+              const cx = sumX / this.atoms.length;
+              const cy = sumY / this.atoms.length;
+              const cz = sumZ / this.atoms.length;
+              for (let a of this.atoms) {
+                a.x -= cx;
+                a.y -= cy;
+                a.z -= cz;
+              }
+            }
+
+            // Parse bonds
+            const bondStart = atomStart + numAtoms;
+            for (let b = 0; b < numBonds; b++) {
+              const line = lines[bondStart + b];
+              if (!line) break;
+              const a1 = parseInt(line.substring(0, 3).trim(), 10) - 1;
+              const a2 = parseInt(line.substring(3, 6).trim(), 10) - 1;
+              const order = parseInt(line.substring(6, 9).trim(), 10) || 1;
+
+              if (this.atoms[a1] && this.atoms[a2]) {
+                const bondObj = {
+                  source: this.atoms[a1],
+                  target: this.atoms[a2],
+                  order: order
+                };
+                this.bonds.push(bondObj);
+                this.atoms[a1].bonds.push(bondObj);
+                this.atoms[a2].bonds.push(bondObj);
+              }
+            }
+          }
+        }
+
+        // Synthetic 3D Geometry Fallback if no conformer is present
+        if (this.atoms.length === 0) {
+          const count = (DATA && DATA.properties && DATA.properties.heavy_atoms) || 12;
+          for (let i = 0; i < count; i++) {
+            const theta = (Math.PI * 2 / count) * i;
+            const phi = (i % 2 === 0 ? 0.35 : -0.35);
+            const r = 2.4;
+            const sym = i % 3 === 0 ? 'O' : (i % 4 === 0 ? 'N' : 'C');
+            const atom = {
+              index: i + 1,
+              symbol: sym,
+              x: r * Math.cos(theta),
+              y: r * Math.sin(theta),
+              z: phi * 1.5,
+              origX: r * Math.cos(theta), origY: r * Math.sin(theta), origZ: phi * 1.5,
+              bonds: [],
+              meta: ELEMENT_REGISTRY[sym] || { name: sym, vdw: 1.6, colorDark: '#94a3b8', colorLight: '#475569', valence: 1 }
+            };
+            this.atoms.push(atom);
+          }
+          for (let i = 0; i < this.atoms.length; i++) {
+            const b = {
+              source: this.atoms[i],
+              target: this.atoms[(i + 1) % this.atoms.length],
+              order: (i % 3 === 0) ? 2 : 1
+            };
+            this.bonds.push(b);
+            this.atoms[i].bonds.push(b);
+            this.atoms[(i + 1) % this.atoms.length].bonds.push(b);
+          }
+        }
+
+        this.fitToViewport();
+      }
+
+      bindEvents() {
+        this.canvas.addEventListener('mousedown', (e) => {
+          this.isDragging = true;
+          this.dragButton = (e.shiftKey) ? 2 : e.button;
+          this.lastMouse = { x: e.clientX, y: e.clientY };
+          this.velX = 0;
+          this.velY = 0;
+          if (this.inertiaFrame) cancelAnimationFrame(this.inertiaFrame);
+
+          if (this.isMeasuring && e.button === 0) {
+            const atom = this.getAtomAt(e.clientX, e.clientY);
+            if (atom) {
+              this.handleMeasureClick(atom);
+            }
+          }
+        });
+
+        window.addEventListener('mousemove', (e) => {
+          if (this.isDragging) {
+            const dx = e.clientX - this.lastMouse.x;
+            const dy = e.clientY - this.lastMouse.y;
+            this.lastMouse = { x: e.clientX, y: e.clientY };
+
+            if (this.dragButton === 0) {
+              // Orbit Trackball
+              this.rotY += dx * 0.008;
+              this.rotX += dy * 0.008;
+              this.velX = dx * 0.008;
+              this.velY = dy * 0.008;
+            } else if (this.dragButton === 2) {
+              // Pan
+              this.panX += dx;
+              this.panY += dy;
+            }
+            this.render();
+          } else {
+            // Hover Inspection
+            const atom = this.getAtomAt(e.clientX, e.clientY);
+            if (atom !== this.hoveredAtom) {
+              this.hoveredAtom = atom;
+              this.canvas.style.cursor = atom ? 'pointer' : (this.isMeasuring ? 'crosshair' : 'grab');
+              this.updateTooltip(e, atom);
+              this.render();
+            } else if (atom && this.tooltip) {
+              this.updateTooltipPosition(e);
+            }
+          }
+        });
+
+        window.addEventListener('mouseup', () => {
+          if (this.isDragging) {
+            this.isDragging = false;
+            // Apply inertial momentum
+            if (!this.isSpinning && (Math.abs(this.velX) > 0.001 || Math.abs(this.velY) > 0.001)) {
+              this.startInertia();
+            }
+          }
+        });
+
+        this.canvas.addEventListener('mouseleave', () => {
+          if (this.hoveredAtom) {
+            this.hoveredAtom = null;
+            if (this.tooltip) this.tooltip.style.display = 'none';
+            this.render();
+          }
+        });
+
+        this.canvas.addEventListener('wheel', (e) => {
+          e.preventDefault();
+          const factor = e.deltaY < 0 ? 1.08 : 0.92;
+          this.stepZoom(factor);
+        }, { passive: false });
+
+        this.canvas.addEventListener('contextmenu', (e) => {
+          e.preventDefault();
+        });
+
+        // Touch Gestures
+        let touchDist = 0;
+        this.canvas.addEventListener('touchstart', (e) => {
+          if (e.touches.length === 1) {
+            this.isDragging = true;
+            this.dragButton = 0;
+            this.lastMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+          } else if (e.touches.length === 2) {
+            touchDist = Math.hypot(
+              e.touches[0].clientX - e.touches[1].clientX,
+              e.touches[0].clientY - e.touches[1].clientY
+            );
+          }
+        }, { passive: false });
+
+        this.canvas.addEventListener('touchmove', (e) => {
+          if (e.touches.length === 1 && this.isDragging) {
+            const dx = e.touches[0].clientX - this.lastMouse.x;
+            const dy = e.touches[0].clientY - this.lastMouse.y;
+            this.lastMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            this.rotY += dx * 0.008;
+            this.rotX += dy * 0.008;
+            this.render();
+          } else if (e.touches.length === 2) {
+            const dist = Math.hypot(
+              e.touches[0].clientX - e.touches[1].clientX,
+              e.touches[0].clientY - e.touches[1].clientY
+            );
+            if (touchDist > 0) {
+              const factor = dist / touchDist;
+              this.stepZoom(factor);
+            }
+            touchDist = dist;
+          }
+        }, { passive: false });
+
+        this.canvas.addEventListener('touchend', () => {
+          this.isDragging = false;
+        });
+      }
+
+      startInertia() {
+        const step = () => {
+          this.rotY += this.velX;
+          this.rotX += this.velY;
+          this.velX *= 0.92;
+          this.velY *= 0.92;
+          this.render();
+
+          if (Math.abs(this.velX) > 0.0002 || Math.abs(this.velY) > 0.0002) {
+            this.inertiaFrame = requestAnimationFrame(step);
+          }
+        };
+        this.inertiaFrame = requestAnimationFrame(step);
+      }
+
+      getAtomAt(clientX, clientY) {
+        const rect = this.canvas.getBoundingClientRect();
+        const mx = clientX - rect.left;
+        const my = clientY - rect.top;
+
+        let closest = null;
+        let minD = 24;
+        for (let a of this.atoms) {
+          if (a.screenX === undefined) continue;
+          const d = Math.hypot(a.screenX - mx, a.screenY - my);
+          if (d < minD && d <= a.screenR + 8) {
+            minD = d;
+            closest = a;
+          }
+        }
+        return closest;
+      }
+
+      updateTooltip(e, atom) {
+        if (!this.tooltip) return;
+        if (!atom) {
+          this.tooltip.style.display = 'none';
+          return;
+        }
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const color = isDark ? atom.meta.colorDark : atom.meta.colorLight;
+
+        this.tooltip.innerHTML = `
+          <div class="atom-tooltip-header">
+            <span class="atom-tooltip-badge" style="background: ${color};"></span>
+            <span>${atom.meta.name} (${atom.symbol}) #${atom.index}</span>
+          </div>
+          <div class="atom-tooltip-row">
+            <span>Coordinates (X,Y,Z):</span>
+            <strong>${atom.origX.toFixed(2)}, ${atom.origY.toFixed(2)}, ${atom.origZ.toFixed(2)} Å</strong>
+          </div>
+          <div class="atom-tooltip-row">
+            <span>Connected Bonds:</span>
+            <strong>${atom.bonds.length}</strong>
+          </div>
+          <div class="atom-tooltip-row">
+            <span>Van der Waals Radius:</span>
+            <strong>${atom.meta.vdw.toFixed(2)} Å</strong>
+          </div>
+        `;
+        this.tooltip.style.display = 'block';
+        this.updateTooltipPosition(e);
+      }
+
+      updateTooltipPosition(e) {
+        if (!this.tooltip) return;
+        const rect = this.container.getBoundingClientRect();
+        const tx = Math.min(e.clientX - rect.left + 15, this.width - 210);
+        const ty = Math.min(e.clientY - rect.top + 15, this.height - 110);
+        this.tooltip.style.left = `${Math.max(10, tx)}px`;
+        this.tooltip.style.top = `${Math.max(10, ty)}px`;
+      }
+
+      updateHUD() {
+        const hudAtoms = document.getElementById('hud-atoms');
+        const hudBonds = document.getElementById('hud-bonds');
+        const hudZoom = document.getElementById('hud-zoom');
+        if (hudAtoms) hudAtoms.textContent = `${this.atoms.length} Atoms`;
+        if (hudBonds) hudBonds.textContent = `${this.bonds.length} Bonds`;
+        if (hudZoom) hudZoom.textContent = `Zoom: ${Math.round(this.zoom * 100)}%`;
+      }
+
+      handleMeasureClick(atom) {
+        if (!this.isMeasuring) return;
+        if (this.measureAtoms.includes(atom)) return;
+
+        this.measureAtoms.push(atom);
+        const hint = document.getElementById('measurement-hint');
+        if (this.measureAtoms.length === 1) {
+          if (hint) {
+            hint.style.display = 'inline-flex';
+            hint.textContent = `Atom #${atom.index} selected. Click second atom...`;
+          }
+          this.measurementDistance = null;
+          this.render();
+        } else if (this.measureAtoms.length === 2) {
+          const a1 = this.measureAtoms[0];
+          const a2 = this.measureAtoms[1];
+          this.measurementDistance = Math.hypot(a1.x - a2.x, a1.y - a2.y, a1.z - a2.z);
+          this.render();
+          if (hint) {
+            hint.style.display = 'inline-flex';
+            hint.textContent = `Measured: ${this.measurementDistance.toFixed(2)} Å (${a1.meta.name} #${a1.index} to ${a2.meta.name} #${a2.index})`;
+          }
+          // Button remains cleanly labeled 'Measure' without physical shifting
+        }
+      }
+
+      setStyle(styleType) {
+        this.style = styleType;
+        this.render();
+      }
+
+      setTheme() {
+        this.render();
+      }
+
+      toggleSurface() {
+        this.showSurface = !this.showSurface;
+        this.render();
+        return this.showSurface;
+      }
+
+      toggleSpin() {
+        this.isSpinning = !this.isSpinning;
+        if (this.isSpinning) {
+          const step = () => {
+            if (!this.isSpinning) return;
+            this.rotY += 0.012;
+            this.render();
+            this.spinFrame = requestAnimationFrame(step);
+          };
+          this.spinFrame = requestAnimationFrame(step);
+        } else {
+          if (this.spinFrame) cancelAnimationFrame(this.spinFrame);
+        }
+        return this.isSpinning;
+      }
+
+      toggleMeasurement() {
+        this.isMeasuring = !this.isMeasuring;
+        this.measureAtoms = [];
+        this.measurementDistance = null;
+        this.canvas.style.cursor = this.isMeasuring ? 'crosshair' : 'grab';
+        this.render();
+        return this.isMeasuring;
+      }
+
+      toggleLabelMode() {
+        const modes = ['symbol', 'index', 'full', 'none'];
+        const nextIdx = (modes.indexOf(this.labelMode) + 1) % modes.length;
+        this.labelMode = modes[nextIdx];
+        this.render();
+        return this.labelMode;
+      }
+
+      stepZoom(factor) {
+        this.zoom = Math.max(0.2, Math.min(this.zoom * factor, 7.0));
+        this.fitToViewport();
+        this.render();
+      }
+
+      stepRotateY(deg) {
+        this.rotY += (deg * Math.PI) / 180;
+        this.render();
+      }
+
+      resetView() {
+        this.rotX = 0.35;
+        this.rotY = -0.55;
+        this.panX = 0;
+        this.panY = 0;
+        this.zoom = 1.0;
+        this.measureAtoms = [];
+        this.measurementDistance = null;
+        this.isMeasuring = false;
+        const btn = document.getElementById('btn-measure');
+        if (btn) {
+          btn.textContent = 'Measure';
+          btn.classList.remove('active');
+        }
+        const hint = document.getElementById('measurement-hint');
+        if (hint) {
+          hint.style.display = 'none';
+        }
+        this.fitToViewport();
+        this.render();
+      }
+
+      exportSnapshot() {
+        const link = document.createElement('a');
+        const cid = (DATA && DATA.cid) || 'compound';
+        link.download = `pubchem_${cid}_3d.png`;
+        link.href = this.canvas.toDataURL('image/png');
+        link.click();
+      }
+
+      render() {
+        if (!this.ctx || this.width === 0 || this.height === 0) return;
+        const isDark = document.body.classList.contains('dark-theme');
+
+        // Studio Lighting Canvas Background
+        const bgGrad = this.ctx.createRadialGradient(
+          this.width / 2, this.height * 0.3, 20,
+          this.width / 2, this.height / 2, Math.max(this.width, this.height) * 0.75
+        );
+        if (isDark) {
+          bgGrad.addColorStop(0, '#101726');
+          bgGrad.addColorStop(0.65, '#070b13');
+          bgGrad.addColorStop(1, '#04070c');
+        } else {
+          bgGrad.addColorStop(0, '#ffffff');
+          bgGrad.addColorStop(0.7, '#f8fafc');
+          bgGrad.addColorStop(1, '#edf2f7');
+        }
+
+        this.ctx.fillStyle = bgGrad;
+        this.ctx.fillRect(0, 0, this.width, this.height);
+
+        // Project Atoms into 3D Space
+        const fov = 850;
+        let minZ = Infinity, maxZ = -Infinity;
+
+        for (let a of this.atoms) {
+          // Rotation around Y (yaw)
+          const x1 = a.x * Math.cos(this.rotY) + a.z * Math.sin(this.rotY);
+          const y1 = a.y;
+          const z1 = -a.x * Math.sin(this.rotY) + a.z * Math.cos(this.rotY);
+
+          // Rotation around X (pitch)
+          const x2 = x1;
+          const y2 = y1 * Math.cos(this.rotX) - z1 * Math.sin(this.rotX);
+          const z2 = y1 * Math.sin(this.rotX) + z1 * Math.cos(this.rotX);
+
+          a.rotX = x2;
+          a.rotY = y2;
+          a.rotZ = z2;
+
+          if (z2 < minZ) minZ = z2;
+          if (z2 > maxZ) maxZ = z2;
+
+          const perspective = fov / (fov + z2 * this.scale * 0.32);
+          a.perspective = perspective;
+          a.screenX = this.width / 2 + this.panX + x2 * this.scale * perspective;
+          a.screenY = this.height / 2 + this.panY - y2 * this.scale * perspective;
+
+          // Compute Screen Radius per representation mode
+          const vdw = a.meta.vdw || 1.6;
+          let r = 8;
+          if (this.style === 'ballstick') {
+            r = Math.max(4, vdw * 8.5 * (this.scale / 35) * perspective);
+          } else if (this.style === 'stick') {
+            r = Math.max(3, vdw * 4.5 * (this.scale / 35) * perspective);
+          } else if (this.style === 'sphere') {
+            r = Math.max(6, vdw * 18.0 * (this.scale / 35) * perspective);
+          } else if (this.style === 'line') {
+            r = Math.max(2, 3.5 * perspective);
+          }
+          a.screenR = r;
+        }
+
+        const zSpan = (maxZ - minZ) || 1.0;
+
+        // Depth cueing helper: subtle atmospheric dimming for distant atoms
+        for (let a of this.atoms) {
+          const zNorm = (a.rotZ - minZ) / zSpan;
+          a.depthFactor = 0.72 + 0.28 * (1 - zNorm);
+        }
+
+        // Virtual Ground Floor Shadow
+        if (this.atoms.length > 0) {
+          this.ctx.save();
+          const shadowY = this.height / 2 + this.panY + (maxZ + 3.2) * this.scale * 0.45;
+          const shadowGrad = this.ctx.createRadialGradient(
+            this.width / 2 + this.panX, shadowY, 5,
+            this.width / 2 + this.panX, shadowY, this.scale * 2.8
+          );
+          shadowGrad.addColorStop(0, isDark ? 'rgba(0,0,0,0.45)' : 'rgba(100,116,139,0.18)');
+          shadowGrad.addColorStop(1, 'rgba(0,0,0,0)');
+          this.ctx.fillStyle = shadowGrad;
+          this.ctx.beginPath();
+          this.ctx.ellipse(this.width / 2 + this.panX, shadowY, this.scale * 2.8, this.scale * 0.75, 0, 0, Math.PI * 2);
+          this.ctx.fill();
+          this.ctx.restore();
+        }
+
+        // Molecular Surface Envelope (if enabled)
+        if (this.showSurface && this.atoms.length > 2) {
+          this.ctx.save();
+          this.ctx.globalAlpha = isDark ? 0.16 : 0.12;
+          this.ctx.fillStyle = isDark ? '#38bdf8' : '#0284c7';
+          for (let a of this.atoms) {
+            this.ctx.beginPath();
+            this.ctx.arc(a.screenX, a.screenY, a.screenR * 2.4, 0, Math.PI * 2);
+            this.ctx.fill();
+          }
+          this.ctx.restore();
+        }
+
+        // Painter's Algorithm: Depth Sorting Primitives
+        const primitives = [];
+        for (let b of this.bonds) {
+          primitives.push({
+            type: 'bond',
+            z: (b.source.rotZ + b.target.rotZ) / 2,
+            bond: b
+          });
+        }
+        for (let a of this.atoms) {
+          primitives.push({
+            type: 'atom',
+            z: a.rotZ,
+            atom: a
+          });
+        }
+        primitives.sort((p1, p2) => p1.z - p2.z);
+
+        // Render sorted primitives
+        for (let p of primitives) {
+          if (p.type === 'bond') {
+            this.drawBond(p.bond, isDark);
+          } else if (p.type === 'atom') {
+            this.drawAtom(p.atom, isDark);
+          }
+        }
+
+        // Draw Measurement Overlay
+        if (this.measureAtoms.length > 0) {
+          this.drawMeasurementOverlay(isDark);
+        }
+
+        // Viewport Coordinates & Status Bar
+        this.ctx.fillStyle = isDark ? '#64748b' : '#94a3b8';
+        this.ctx.font = '10px monospace';
+        this.ctx.textAlign = 'left';
+        this.ctx.fillText(
+          `${this.atoms.length} Atoms | ${this.bonds.length} Bonds | Mode: ${this.style.toUpperCase()}`,
+          14, this.height - 14
+        );
+      }
+
+      drawBond(b, isDark) {
+        const s = b.source;
+        const t = b.target;
+        const c1 = isDark ? s.meta.colorDark : s.meta.colorLight;
+        const c2 = isDark ? t.meta.colorDark : t.meta.colorLight;
+
+        const dx = t.screenX - s.screenX;
+        const dy = t.screenY - s.screenY;
+        const len = Math.hypot(dx, dy) || 1;
+        const pAvg = (s.perspective + t.perspective) / 2;
+
+        if (this.style === 'line') {
+          // Wireframe mode
+          this.ctx.beginPath();
+          this.ctx.moveTo(s.screenX, s.screenY);
+          this.ctx.lineTo((s.screenX + t.screenX) / 2, (s.screenY + t.screenY) / 2);
+          this.ctx.strokeStyle = c1;
+          this.ctx.lineWidth = 1.8;
+          this.ctx.stroke();
+
+          this.ctx.beginPath();
+          this.ctx.moveTo((s.screenX + t.screenX) / 2, (s.screenY + t.screenY) / 2);
+          this.ctx.lineTo(t.screenX, t.screenY);
+          this.ctx.strokeStyle = c2;
+          this.ctx.lineWidth = 1.8;
+          this.ctx.stroke();
+          return;
+        }
+
+        const baseWidth = (this.style === 'stick' ? 8.5 : (this.style === 'ballstick' ? 5.5 : 3.5));
+        const bondWidth = Math.max(2, baseWidth * (this.scale / 35) * pAvg);
+
+        if (b.order === 2) {
+          // Double Bond: 2 parallel offset 3D cylinders
+          const offset = bondWidth * 0.72;
+          const nx = (-dy / len) * offset;
+          const ny = (dx / len) * offset;
+
+          this.drawCylindricalBond(s.screenX + nx, s.screenY + ny, t.screenX + nx, t.screenY + ny, bondWidth * 0.58, c1, c2, isDark);
+          this.drawCylindricalBond(s.screenX - nx, s.screenY - ny, t.screenX - nx, t.screenY - ny, bondWidth * 0.58, c1, c2, isDark);
+        } else if (b.order === 3) {
+          // Triple Bond: 3 parallel offset 3D cylinders
+          const offset = bondWidth * 0.95;
+          const nx = (-dy / len) * offset;
+          const ny = (dx / len) * offset;
+
+          this.drawCylindricalBond(s.screenX, s.screenY, t.screenX, t.screenY, bondWidth * 0.48, c1, c2, isDark);
+          this.drawCylindricalBond(s.screenX + nx, s.screenY + ny, t.screenX + nx, t.screenY + ny, bondWidth * 0.48, c1, c2, isDark);
+          this.drawCylindricalBond(s.screenX - nx, s.screenY - ny, t.screenX - nx, t.screenY - ny, bondWidth * 0.48, c1, c2, isDark);
+        } else {
+          // Single / Aromatic Bond
+          this.drawCylindricalBond(s.screenX, s.screenY, t.screenX, t.screenY, bondWidth, c1, c2, isDark);
+        }
+      }
+
+      drawCylindricalBond(x1, y1, x2, y2, width, color1, color2, isDark) {
+        const midX = (x1 + x2) / 2;
+        const midY = (y1 + y2) / 2;
+
+        // First segment (source atom color)
+        this.ctx.beginPath();
+        this.ctx.moveTo(x1, y1);
+        this.ctx.lineTo(midX, midY);
+        this.ctx.strokeStyle = color1;
+        this.ctx.lineWidth = width;
+        this.ctx.lineCap = 'round';
+        this.ctx.stroke();
+
+        // Second segment (target atom color)
+        this.ctx.beginPath();
+        this.ctx.moveTo(midX, midY);
+        this.ctx.lineTo(x2, y2);
+        this.ctx.strokeStyle = color2;
+        this.ctx.lineWidth = width;
+        this.ctx.lineCap = 'round';
+        this.ctx.stroke();
+
+        // 3D Cylindrical Highlight line along length
+        this.ctx.beginPath();
+        this.ctx.moveTo(x1, y1);
+        this.ctx.lineTo(x2, y2);
+        this.ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.55)';
+        this.ctx.lineWidth = Math.max(1, width * 0.28);
+        this.ctx.stroke();
+      }
+
+      drawAtom(a, isDark) {
+        const r = a.screenR;
+        const color = isDark ? a.meta.colorDark : a.meta.colorLight;
+
+        if (this.style === 'line') {
+          // Dot with symbol
+          this.ctx.beginPath();
+          this.ctx.arc(a.screenX, a.screenY, 3, 0, Math.PI * 2);
+          this.ctx.fillStyle = color;
+          this.ctx.fill();
+          if (this.labelMode !== 'none') {
+            this.drawAtomLabel(a, isDark);
+          }
+          return;
+        }
+
+        // High-Resolution Specular 3D Sphere Illusion
+        const lx = a.screenX - r * 0.32;
+        const ly = a.screenY - r * 0.32;
+        const grad = this.ctx.createRadialGradient(lx, ly, r * 0.05, a.screenX, a.screenY, r);
+
+        grad.addColorStop(0, '#ffffff');                           // Specular glint
+        grad.addColorStop(0.18, 'rgba(255, 255, 255, 0.85)');     // Specular bloom
+        grad.addColorStop(0.48, color);                           // Diffuse highlight
+        grad.addColorStop(0.82, color);                           // Body color
+        grad.addColorStop(0.94, isDark ? '#0b0f19' : '#334155');  // Terminator shadow
+        grad.addColorStop(1.0, isDark ? '#020408' : '#0f172a');   // Rim ambient
+
+        this.ctx.save();
+        this.ctx.beginPath();
+        this.ctx.arc(a.screenX, a.screenY, r, 0, Math.PI * 2);
+        this.ctx.fillStyle = grad;
+        this.ctx.fill();
+
+        // Subtle outer edge stroke
+        this.ctx.strokeStyle = isDark ? 'rgba(0,0,0,0.45)' : 'rgba(255,255,255,0.4)';
+        this.ctx.lineWidth = 1;
+        this.ctx.stroke();
+        this.ctx.restore();
+
+        // Labels
+        if (this.labelMode !== 'none') {
+          this.drawAtomLabel(a, isDark);
+        }
+
+        // Selection / Hover Halo
+        if (this.measureAtoms.includes(a) || this.hoveredAtom === a) {
+          this.ctx.save();
+          this.ctx.beginPath();
+          this.ctx.arc(a.screenX, a.screenY, r + 5, 0, Math.PI * 2);
+          this.ctx.strokeStyle = this.measureAtoms.includes(a) ? '#fbbf24' : '#38bdf8';
+          this.ctx.lineWidth = 2.5;
+          this.ctx.stroke();
+          this.ctx.restore();
+        }
+      }
+
+      drawAtomLabel(a, isDark) {
+        let text = '';
+        if (this.labelMode === 'symbol') text = a.symbol;
+        else if (this.labelMode === 'index') text = `${a.index}`;
+        else if (this.labelMode === 'full') text = `${a.symbol}${a.index}`;
+
+        if (!text) return;
+
+        // In Spacefill/Ball&Stick, don't overwhelm with carbon labels if too small
+        if (this.style === 'ballstick' && a.screenR < 9 && a.symbol === 'C' && this.labelMode === 'symbol') {
+          return;
+        }
+
+        const fontSize = Math.max(9, Math.min(Math.round(a.screenR * 0.85), 14));
+        this.ctx.font = `bold ${fontSize}px sans-serif`;
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'middle';
+
+        // High-contrast text label
+        const isLightAtom = (a.symbol === 'H' || a.symbol === 'C');
+        this.ctx.fillStyle = isLightAtom ? '#0f172a' : '#ffffff';
+        this.ctx.fillText(text, a.screenX, a.screenY);
+      }
+
+      drawMeasurementOverlay(isDark) {
+        if (this.measureAtoms.length === 2) {
+          const a1 = this.measureAtoms[0];
+          const a2 = this.measureAtoms[1];
+
+          // Dashed connection line
+          this.ctx.save();
+          this.ctx.beginPath();
+          this.ctx.moveTo(a1.screenX, a1.screenY);
+          this.ctx.lineTo(a2.screenX, a2.screenY);
+          this.ctx.setLineDash([6, 4]);
+          this.ctx.strokeStyle = '#fbbf24';
+          this.ctx.lineWidth = 2;
+          this.ctx.stroke();
+          this.ctx.restore();
+
+          // Distance Pill Badge
+          if (this.measurementDistance !== null) {
+            const mx = (a1.screenX + a2.screenX) / 2;
+            const my = (a1.screenY + a2.screenY) / 2;
+            const label = `${this.measurementDistance.toFixed(2)} Å`;
+
+            this.ctx.font = 'bold 11px monospace';
+            const pad = 6;
+            const textWidth = this.ctx.measureText(label).width;
+
+            this.ctx.fillStyle = isDark ? '#1a2234' : '#ffffff';
+            this.ctx.strokeStyle = '#fbbf24';
+            this.ctx.lineWidth = 1.5;
+            this.ctx.beginPath();
+            this.ctx.roundRect(mx - textWidth / 2 - pad, my - 11, textWidth + pad * 2, 22, 6);
+            this.ctx.fill();
+            this.ctx.stroke();
+
+            this.ctx.fillStyle = isDark ? '#fbbf24' : '#d97706';
+            this.ctx.textAlign = 'center';
+            this.ctx.textBaseline = 'middle';
+            this.ctx.fillText(label, mx, my);
+          }
+        }
+      }
+    }
+
+    // Aliases for backward compatibility
+    class Static3DStructureViewer extends Molecule3DViewer {}
+    const MolecularPhysicsEngine = Molecule3DViewer;
+
+    // ==========================================
+    // 6. DRUG-LIKENESS RADAR CHART
+    // ==========================================
+    function renderRadarChart(p) {
+      const svg = document.getElementById('radar-svg');
+      if (!svg || !p) return;
+
+      const isDark = document.body.classList.contains('dark-theme');
+      const cx = 170, cy = 170, r = 110;
+      const axes = [
+        { label: 'MW (500)', max: 600, limit: 500, val: p.molecular_weight },
+        { label: 'XLogP (5)', max: 8, limit: 5, val: p.xlogp !== null ? p.xlogp : 0 },
+        { label: 'HBD (5)', max: 8, limit: 5, val: p.h_bond_donors },
+        { label: 'HBA (10)', max: 15, limit: 10, val: p.h_bond_acceptors },
+        { label: 'TPSA (140)', max: 200, limit: 140, val: p.tpsa },
+        { label: 'RotB (10)', max: 15, limit: 10, val: p.rotatable_bonds }
+      ];
+
+      const n = axes.length;
+      let gridSvg = '';
+      let boundaryPoints = [];
+      let compoundPoints = [];
+
+      // Concentric guide rings
+      const strokeColor = isDark ? '#2e3d5b' : '#e2e8f0';
+      const labelColor = isDark ? '#94a3b8' : '#64748b';
+
+      for (let step = 1; step <= 4; step++) {
+        const radius = (r / 4) * step;
+        gridSvg += `<circle cx="${cx}" cy="${cy}" r="${radius}" fill="none" stroke="${strokeColor}" stroke-dasharray="2,2" />`;
+      }
+
+      axes.forEach((axis, i) => {
+        const angle = (Math.PI * 2 / n) * i - Math.PI / 2;
+        const x2 = cx + r * Math.cos(angle);
+        const y2 = cy + r * Math.sin(angle);
+
+        // Radial axis line
+        gridSvg += `<line x1="${cx}" y1="${cy}" x2="${x2}" y2="${y2}" stroke="${strokeColor}" />`;
+
+        // Text label
+        const lx = cx + (r + 20) * Math.cos(angle);
+        const ly = cy + (r + 20) * Math.sin(angle);
+        gridSvg += `<text x="${lx}" y="${ly + 4}" fill="${labelColor}" font-size="10" text-anchor="middle" font-family="monospace">${axis.label}</text>`;
+
+        // Lipinski/Veber Threshold boundary
+        const boundFrac = Math.min(Math.max(axis.limit / axis.max, 0.05), 1.0);
+        boundaryPoints.push(`${cx + r * boundFrac * Math.cos(angle)},${cy + r * boundFrac * Math.sin(angle)}`);
+
+        // Target compound property point
+        const compFrac = Math.min(Math.max(axis.val / axis.max, 0.05), 1.15);
+        compoundPoints.push(`${cx + r * compFrac * Math.cos(angle)},${cy + r * compFrac * Math.sin(angle)}`);
+      });
+
+      const boundaryPoly = `<polygon points="${boundaryPoints.join(' ')}" fill="rgba(52, 211, 153, 0.08)" stroke="#34d399" stroke-width="1.5" stroke-dasharray="4,4" />`;
+      const compoundPoly = `<polygon points="${compoundPoints.join(' ')}" fill="rgba(56, 189, 248, 0.35)" stroke="#38bdf8" stroke-width="2" />`;
+
+      svg.innerHTML = gridSvg + boundaryPoly + compoundPoly;
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PubChemCompoundProfile",
+  "description": "Comprehensive chemical profile produced by pubchem-database-visualize skill",
+  "type": "object",
+  "required": [
+    "cid",
+    "identifiers",
+    "properties",
+    "drug_likeness",
+    "safety",
+    "pharmacology",
+    "bioassays",
+    "analogs"
+  ],
+  "properties": {
+    "cid": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "identifiers": {
+      "type": "object",
+      "required": ["iupac_name", "canonical_smiles", "molecular_formula", "inchi_key"],
+      "properties": {
+        "iupac_name": { "type": "string" },
+        "canonical_smiles": { "type": "string" },
+        "isomeric_smiles": { "type": "string" },
+        "molecular_formula": { "type": "string" },
+        "inchi": { "type": "string" },
+        "inchi_key": { "type": "string" },
+        "query_input": { "type": "string" }
+      }
+    },
+    "properties": {
+      "type": "object",
+      "required": [
+        "molecular_weight",
+        "xlogp",
+        "h_bond_donors",
+        "h_bond_acceptors",
+        "tpsa",
+        "rotatable_bonds",
+        "heavy_atoms"
+      ],
+      "properties": {
+        "molecular_weight": { "type": "number" },
+        "xlogp": { "type": ["number", "null"] },
+        "h_bond_donors": { "type": "integer" },
+        "h_bond_acceptors": { "type": "integer" },
+        "tpsa": { "type": "number" },
+        "rotatable_bonds": { "type": "integer" },
+        "heavy_atoms": { "type": "integer" },
+        "exact_mass": { "type": "number" },
+        "complexity": { "type": "number" }
+      }
+    },
+    "drug_likeness": {
+      "type": "object",
+      "required": [
+        "lipinski_rule_of_five",
+        "veber_rule"
+      ],
+      "properties": {
+        "lipinski_rule_of_five": {
+          "type": "object",
+          "required": ["compliant", "violations", "violation_details", "status"],
+          "properties": {
+            "compliant": { "type": "boolean" },
+            "violations": { "type": "integer" },
+            "violation_details": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "status": { "type": "string", "enum": ["COMPLIANT", "BORDERLINE", "VIOLATION"] }
+          }
+        },
+        "veber_rule": {
+          "type": "object",
+          "required": ["compliant", "violations", "violation_details", "status"],
+          "properties": {
+            "compliant": { "type": "boolean" },
+            "violations": { "type": "integer" },
+            "violation_details": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "status": { "type": "string", "enum": ["COMPLIANT", "VIOLATION"] }
+          }
+        }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "required": ["signal_word", "hazard_statements", "precautionary_statements", "pictograms"],
+      "properties": {
+        "signal_word": { "type": "string" },
+        "hazard_statements": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "code": { "type": "string" },
+              "statement": { "type": "string" }
+            }
+          }
+        },
+        "precautionary_statements": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "code": { "type": "string" },
+              "statement": { "type": "string" }
+            }
+          }
+        },
+        "pictograms": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "pharmacology": {
+      "type": "object",
+      "required": ["indications", "mechanism_of_action", "targets"],
+      "properties": {
+        "indications": { "type": "string" },
+        "mechanism_of_action": { "type": "string" },
+        "targets": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "bioassays": {
+      "type": "object",
+      "required": ["total_tested", "total_active", "active_assays"],
+      "properties": {
+        "total_tested": { "type": "integer" },
+        "total_active": { "type": "integer" },
+        "active_assays": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "aid": { "type": "integer" },
+              "name": { "type": "string" },
+              "target": { "type": "string" },
+              "activity": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "analogs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "cid": { "type": "integer" },
+          "iupac_name": { "type": "string" },
+          "molecular_formula": { "type": "string" },
+          "similarity_score": { "type": "number" }
+        }
+      }
+    },
+    "has_3d_conformer": { "type": "boolean" }
+  }
+}

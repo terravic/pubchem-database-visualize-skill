@@ -1,0 +1,125 @@
+{
+  "cid": 2244,
+  "identifiers": {
+    "iupac_name": "2-acetyloxybenzoic acid",
+    "canonical_smiles": "CC(=O)OC1=CC=CC=C1C(=O)O",
+    "isomeric_smiles": "CC(=O)OC1=CC=CC=C1C(=O)O",
+    "molecular_formula": "C9H8O4",
+    "inchi": "InChI=1S/C9H8O4/c1-6(10)13-8-5-3-2-4-7(8)9(11)12/h2-5H,1H3,(H,11,12)",
+    "inchi_key": "BSYNRYMUTXBXSQ-UHFFFAOYSA-N",
+    "query_input": "aspirin"
+  },
+  "properties": {
+    "molecular_weight": 180.16,
+    "xlogp": 1.2,
+    "h_bond_donors": 1,
+    "h_bond_acceptors": 4,
+    "tpsa": 63.6,
+    "rotatable_bonds": 2,
+    "heavy_atoms": 13,
+    "exact_mass": 180.042,
+    "complexity": 212.0
+  },
+  "drug_likeness": {
+    "lipinski_rule_of_five": {
+      "compliant": true,
+      "violations": 0,
+      "violation_details": [],
+      "status": "COMPLIANT"
+    },
+    "veber_rule": {
+      "compliant": true,
+      "violations": 0,
+      "violation_details": [],
+      "status": "COMPLIANT"
+    }
+  },
+  "safety": {
+    "signal_word": "WARNING",
+    "hazard_statements": [
+      {
+        "code": "H302",
+        "statement": "Harmful if swallowed"
+      },
+      {
+        "code": "H315",
+        "statement": "Causes skin irritation"
+      },
+      {
+        "code": "H319",
+        "statement": "Causes serious eye irritation"
+      }
+    ],
+    "precautionary_statements": [
+      {
+        "code": "P264",
+        "statement": "Wash hands thoroughly after handling."
+      },
+      {
+        "code": "P280",
+        "statement": "Wear protective gloves and eye protection."
+      },
+      {
+        "code": "P301+P312",
+        "statement": "IF SWALLOWED: Call a POISON CENTER/doctor if you feel unwell."
+      }
+    ],
+    "pictograms": [
+      "GHS07-harmful"
+    ]
+  },
+  "pharmacology": {
+    "indications": "Indicated for the relief of mild to moderate pain, fever, and inflammation, as well as prevention of thrombotic cardiovascular events.",
+    "mechanism_of_action": "Irreversibly inhibits cyclooxygenase-1 (COX-1) and modifies the enzymatic activity of cyclooxygenase-2 (COX-2), leading to reduced synthesis of prostaglandins and thromboxanes.",
+    "targets": [
+      "Cyclooxygenase-1 (PTGS1)",
+      "Cyclooxygenase-2 (PTGS2)",
+      "Prostaglandin E synthase"
+    ]
+  },
+  "bioassays": {
+    "total_tested": 1420,
+    "total_active": 18,
+    "active_assays": [
+      {
+        "aid": 1259253,
+        "name": "COX-1 Inhibition Fluorometric Assay",
+        "target": "PTGS1",
+        "activity": "Active (IC50 4.1 uM)"
+      },
+      {
+        "aid": 1259254,
+        "name": "COX-2 Inhibition Chemiluminescence Assay",
+        "target": "PTGS2",
+        "activity": "Active (IC50 25.0 uM)"
+      },
+      {
+        "aid": 651635,
+        "name": "Platelet Aggregation Inhibition Assay",
+        "target": "Thromboxane A2 Synthase",
+        "activity": "Active (EC50 12.5 uM)"
+      }
+    ]
+  },
+  "analogs": [
+    {
+      "cid": 338,
+      "iupac_name": "salicylic acid",
+      "molecular_formula": "C7H6O3",
+      "similarity_score": 0.89
+    },
+    {
+      "cid": 5080,
+      "iupac_name": "diflunisal",
+      "molecular_formula": "C13H8F2O3",
+      "similarity_score": 0.86
+    },
+    {
+      "cid": 1983,
+      "iupac_name": "acetaminophen",
+      "molecular_formula": "C8H9NO2",
+      "similarity_score": 0.74
+    }
+  ],
+  "has_3d_conformer": true
+}

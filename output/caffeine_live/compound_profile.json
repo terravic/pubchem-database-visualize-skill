@@ -1,0 +1,105 @@
+{
+  "cid": 2519,
+  "identifiers": {
+    "iupac_name": "1,3,7-trimethylpurine-2,6-dione",
+    "canonical_smiles": "CN1C=NC2=C1C(=O)N(C(=O)N2C)C",
+    "isomeric_smiles": "CN1C=NC2=C1C(=O)N(C(=O)N2C)C",
+    "molecular_formula": "C8H10N4O2",
+    "inchi": "InChI=1S/C8H10N4O2/c1-10-4-9-6-5(10)7(13)12(3)8(14)11(6)2/h4H,1-3H3",
+    "inchi_key": "RYYVLZVUVIJVGH-UHFFFAOYSA-N",
+    "query_input": "caffeine"
+  },
+  "properties": {
+    "molecular_weight": 194.19,
+    "xlogp": -0.1,
+    "h_bond_donors": 0,
+    "h_bond_acceptors": 3,
+    "tpsa": 58.4,
+    "rotatable_bonds": 0,
+    "heavy_atoms": 14,
+    "exact_mass": 194.08,
+    "complexity": 293.0
+  },
+  "drug_likeness": {
+    "lipinski_rule_of_five": {
+      "compliant": true,
+      "violations": 0,
+      "violation_details": [],
+      "status": "COMPLIANT"
+    },
+    "veber_rule": {
+      "compliant": true,
+      "violations": 0,
+      "violation_details": [],
+      "status": "COMPLIANT"
+    }
+  },
+  "safety": {
+    "signal_word": "WARNING",
+    "hazard_statements": [
+      {
+        "code": "H302",
+        "statement": "Harmful if swallowed"
+      }
+    ],
+    "precautionary_statements": [
+      {
+        "code": "P264",
+        "statement": "Wash hands thoroughly after handling."
+      },
+      {
+        "code": "P270",
+        "statement": "Do not eat, drink or smoke when using this product."
+      },
+      {
+        "code": "P301+P312",
+        "statement": "IF SWALLOWED: Call a POISON CENTER/doctor if you feel unwell."
+      }
+    ],
+    "pictograms": [
+      "GHS07-harmful"
+    ]
+  },
+  "pharmacology": {
+    "indications": "Indicated for the management of apnea of prematurity and as a central nervous system stimulant.",
+    "mechanism_of_action": "Reversible competitive antagonist of adenosine A1, A2A, and A2B receptors. Non-selective inhibitor of phosphodiesterase (PDE) enzymes.",
+    "targets": [
+      "Adenosine A1 Receptor",
+      "Adenosine A2A Receptor",
+      "Phosphodiesterase"
+    ]
+  },
+  "bioassays": {
+    "total_tested": 780,
+    "total_active": 12,
+    "active_assays": [
+      {
+        "aid": 1159610,
+        "name": "Adenosine A2A Radioligand Binding",
+        "target": "ADORA2A",
+        "activity": "Active (Ki 12.0 uM)"
+      },
+      {
+        "aid": 1159611,
+        "name": "Phosphodiesterase 4 Inhibition Screen",
+        "target": "PDE4D",
+        "activity": "Active (IC50 500.0 uM)"
+      }
+    ]
+  },
+  "analogs": [
+    {
+      "cid": 2153,
+      "iupac_name": "theophylline",
+      "molecular_formula": "C7H8N4O2",
+      "similarity_score": 0.92
+    },
+    {
+      "cid": 5429,
+      "iupac_name": "theobromine",
+      "molecular_formula": "C7H8N4O2",
+      "similarity_score": 0.91
+    }
+  ],
+  "has_3d_conformer": true
+}

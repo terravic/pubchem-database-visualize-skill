@@ -1,0 +1,21 @@
+PubChem Data Usage and Citation Acknowledgment
+==============================================
+
+This workspace acknowledges and complies with the following National Center for Biotechnology Information (NCBI) and PubChem policies:
+
+1. PubChem Citation Guidelines:
+   URL: https://pubchem.ncbi.nlm.nih.gov/docs/citation-guidelines
+   Kim S, Chen J, Cheng T, et al. PubChem 2023 update. Nucleic Acids Res. 2023;51(D1):D1373-D1380. doi:10.1093/nar/gkac956.
+
+2. PubChem PUG-REST Usage Policy:
+   URL: https://pubchem.ncbi.nlm.nih.gov/docs/pug-rest
+   - Rate limit: No more than 5 requests per second.
+   - Do not submit more than 400 requests in a single minute.
+   - Limit data transfer during peak hours (Monday through Friday 9:00 AM - 5:00 PM US Eastern Time).
+   - Use exponential backoff upon receiving HTTP 429 (Too Many Requests) or HTTP 503 (Service Unavailable) status codes.
+
+3. License Terms:
+   PubChem data are provided as a public domain biomedical informatics resource. Users are responsible for complying with provider-specific restrictions where annotated.
+
+Recorded Acceptance Date: 2026-09-15
+Harness Status: Verified
