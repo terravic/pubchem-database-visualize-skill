@@ -3,53 +3,58 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PubChem Molecular Evaluation Dashboard</title>
+  <meta name="description" content="PubChem Molecular Evaluation and Structural Conformer Dashboard">
+  <title>Molecular Evaluation Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      /* Theme Variables: Dark (Default) */
-      --bg-primary: #0a0e17;
-      --bg-secondary: #111827;
-      --bg-card: #151e2e;
-      --bg-hover: #1e293b;
-      --viewer-bg: #070b12;
-      --border-color: #243047;
-      --border-subtle: #1e293b;
-      --text-primary: #f8fafc;
-      --text-secondary: #94a3b8;
-      --text-muted: #64748b;
-      --accent-blue: #38bdf8;
-      --accent-blue-bg: rgba(56, 189, 248, 0.12);
-      --accent-emerald: #34d399;
-      --accent-emerald-bg: rgba(52, 211, 153, 0.12);
-      --accent-amber: #fbbf24;
-      --accent-amber-bg: rgba(251, 191, 36, 0.12);
-      --accent-rose: #f87171;
-      --accent-rose-bg: rgba(248, 113, 113, 0.12);
-      --accent-purple: #c084fc;
-      --transition-speed: 0.2s;
+      /* Dark Mode Specifications (DESIGN.md Section 3) */
+      --bg-canvas: #0D0E11;
+      --bg-surface: #16171D;
+      --bg-hover: rgba(236, 232, 226, 0.04);
+      --border-color: #292A30;
+      --text-primary: #ECE8E2;
+      --text-secondary: #9A9895;
+
+      /* Data Visualization Color Palette (DESIGN.md Section 5) */
+      --viz-teal: #0D9488;
+      --viz-amber: #D97706;
+      --viz-indigo: #4F46E5;
+      --viz-emerald: #059669;
+      --viz-rose: #E11D48;
+
+      /* Translucent Tint Tokens */
+      --tint-teal: rgba(13, 148, 136, 0.14);
+      --tint-amber: rgba(217, 119, 6, 0.14);
+      --tint-indigo: rgba(79, 70, 229, 0.14);
+      --tint-emerald: rgba(5, 150, 105, 0.14);
+      --tint-rose: rgba(225, 29, 72, 0.14);
+
+      /* Typography (DESIGN.md Section 1 & 4: DM Sans + IBM Plex Mono) */
+      --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+      /* Geometry (DESIGN.md Section 3: 6px to 8px border-radius) */
+      --radius-card: 8px;
+      --radius-control: 6px;
     }
 
     body.light-theme {
-      /* Theme Variables: Light */
-      --bg-primary: #f8fafc;
-      --bg-secondary: #ffffff;
-      --bg-card: #ffffff;
-      --bg-hover: #f1f5f9;
-      --viewer-bg: #f8fafc;
-      --border-color: #e2e8f0;
-      --border-subtle: #f1f5f9;
-      --text-primary: #0f172a;
-      --text-secondary: #475569;
-      --text-muted: #94a3b8;
-      --accent-blue: #0284c7;
-      --accent-blue-bg: rgba(2, 132, 199, 0.08);
-      --accent-emerald: #059669;
-      --accent-emerald-bg: rgba(5, 150, 105, 0.08);
-      --accent-amber: #d97706;
-      --accent-amber-bg: rgba(217, 119, 6, 0.08);
-      --accent-rose: #dc2626;
-      --accent-rose-bg: rgba(220, 38, 38, 0.08);
-      --accent-purple: #7c3aed;
+      /* Light Mode Specifications (DESIGN.md Section 3) */
+      --bg-canvas: #FAFAF9;
+      --bg-surface: #FFFFFF;
+      --bg-hover: rgba(28, 25, 23, 0.03);
+      --border-color: #E7E5E4;
+      --text-primary: #1C1917;
+      --text-secondary: #787774;
+
+      --tint-teal: rgba(13, 148, 136, 0.10);
+      --tint-amber: rgba(217, 119, 6, 0.10);
+      --tint-indigo: rgba(79, 70, 229, 0.10);
+      --tint-emerald: rgba(5, 150, 105, 0.10);
+      --tint-rose: rgba(225, 29, 72, 0.10);
     }
 
     * {
@@ -59,136 +64,119 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-primary);
+      font-family: var(--font-sans);
+      background-color: var(--bg-canvas);
       color: var(--text-primary);
       line-height: 1.5;
       padding: 24px;
-      transition: background-color var(--transition-speed), color var(--transition-speed);
+      -webkit-font-smoothing: antialiased;
     }
 
-    .container {
-      max-width: 1440px;
+    .dashboard-shell {
+      max-width: 1400px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 24px;
-    }
-
-    /* Header */
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--border-color);
-      flex-wrap: wrap;
       gap: 16px;
     }
 
-    .header-title {
+    /* Header */
+    .top-bar {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-card);
+      padding: 18px 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .identity-block {
       display: flex;
       flex-direction: column;
       gap: 4px;
     }
 
-    .header-title h1 {
-      font-size: 24px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
+    .identity-block h1 {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
       color: var(--text-primary);
     }
 
-    .header-title .subtitle {
-      font-size: 13px;
+    .identity-meta {
+      font-family: var(--font-mono);
+      font-size: 12px;
       color: var(--text-secondary);
-      font-family: monospace;
     }
 
-    .header-controls {
+    .header-actions {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
-    .header-badges {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .badge {
+    /* Status Indicators: Shown only for critical/warning states (DESIGN.md Section 1) */
+    .alert-pill {
+      font-family: var(--font-mono);
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.04em;
       padding: 4px 10px;
-      border-radius: 6px;
-      display: inline-flex;
+      border-radius: var(--radius-control);
+      border: 1px solid transparent;
+      display: none;
       align-items: center;
-      gap: 4px;
     }
 
-    .badge-primary {
-      background-color: var(--accent-blue-bg);
-      color: var(--accent-blue);
-      border: 1px solid var(--accent-blue);
+    .alert-pill.state-warning {
+      display: inline-flex;
+      background-color: var(--tint-amber);
+      color: var(--viz-amber);
+      border-color: var(--viz-amber);
     }
 
-    .badge-success {
-      background-color: var(--accent-emerald-bg);
-      color: var(--accent-emerald);
-      border: 1px solid var(--accent-emerald);
+    .alert-pill.state-critical {
+      display: inline-flex;
+      background-color: var(--tint-rose);
+      color: var(--viz-rose);
+      border-color: var(--viz-rose);
     }
 
-    .badge-warning {
-      background-color: var(--accent-amber-bg);
-      color: var(--accent-amber);
-      border: 1px solid var(--accent-amber);
-    }
-
-    .badge-danger {
-      background-color: var(--accent-rose-bg);
-      color: var(--accent-rose);
-      border: 1px solid var(--accent-rose);
-    }
-
-    .badge-neutral {
-      background-color: var(--bg-hover);
-      color: var(--text-secondary);
-      border: 1px solid var(--border-color);
-    }
-
-    /* Theme Toggle Button (Icon Only) */
+    /* Single Textless Minimalist Icon Theme Toggle (DESIGN.md Section 3) */
     .theme-toggle-btn {
-      background: var(--bg-secondary);
+      background-color: var(--bg-surface);
       border: 1px solid var(--border-color);
       color: var(--text-primary);
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-control);
       display: inline-flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: all var(--transition-speed) ease;
       padding: 0;
+      transition: border-color 0.15s ease, background-color 0.15s ease;
     }
 
     .theme-toggle-btn:hover {
-      background: var(--bg-hover);
-      border-color: var(--accent-blue);
+      background-color: var(--bg-hover);
+      border-color: var(--viz-teal);
     }
 
     .theme-icon {
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
       stroke: currentColor;
     }
 
     body.dark-theme .moon-icon {
       display: none;
     }
+
     body.dark-theme .sun-icon {
       display: block;
     }
@@ -196,62 +184,70 @@
     body.light-theme .sun-icon {
       display: none;
     }
+
     body.light-theme .moon-icon {
       display: block;
     }
 
-    /* Grid Layouts */
-    .grid-2 {
+    /* Flat Bento Grid Layout (DESIGN.md Section 1: No Card-in-Card Nesting) */
+    .bento-grid-2 {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 16px;
+    }
+
+    .bento-grid-equal {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 20px;
+      gap: 16px;
     }
 
     @media (max-width: 1024px) {
-      .grid-2 {
+      .bento-grid-2,
+      .bento-grid-equal {
         grid-template-columns: 1fr;
       }
     }
 
-    /* Cards */
-    .card {
-      background-color: var(--bg-card);
+    .bento-panel {
+      background-color: var(--bg-surface);
       border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 20px;
+      border-radius: var(--radius-card);
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-      transition: border-color var(--transition-speed);
+      overflow: hidden;
     }
 
-    .card-header {
+    .panel-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border-color);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid var(--border-subtle);
-      padding-bottom: 12px;
+      gap: 12px;
     }
 
-    .card-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--accent-blue);
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
+    .panel-title {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      color: var(--text-primary);
     }
 
-    /* Viewport Box */
-    .viewport-box {
+    .panel-meta {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    /* 3D Molecular Stage: Edge-to-edge flat surface without nested card borders */
+    .viewer-stage {
       position: relative;
       width: 100%;
-      height: 420px;
-      background: var(--viewer-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
+      height: 410px;
+      background-color: transparent;
+      border-bottom: 1px solid var(--border-color);
       overflow: hidden;
-      transition: background-color var(--transition-speed);
     }
 
     #molviewer {
@@ -271,48 +267,36 @@
       cursor: grabbing;
     }
 
-    /* Viewport HUD */
+    /* Minimal Monospaced HUD */
     .viewer-hud {
       position: absolute;
       top: 12px;
       right: 12px;
-      background: rgba(15, 23, 42, 0.82);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      background-color: var(--bg-surface);
       border: 1px solid var(--border-color);
-      border-radius: 6px;
-      padding: 5px 12px;
+      border-radius: var(--radius-control);
+      padding: 4px 10px;
+      font-family: var(--font-mono);
       font-size: 11px;
-      font-family: monospace;
       display: flex;
       gap: 12px;
       color: var(--text-secondary);
       pointer-events: none;
       z-index: 10;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-    }
-
-    body.light-theme .viewer-hud {
-      background: rgba(255, 255, 255, 0.88);
-      border-color: rgba(203, 213, 225, 0.8);
-      color: #475569;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
 
     /* Floating Atom Inspector Tooltip */
     .atom-tooltip {
       position: absolute;
-      background: var(--bg-card);
-      border: 1px solid var(--accent-blue);
-      border-radius: 8px;
-      padding: 10px 14px;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-control);
+      padding: 10px 12px;
       font-size: 11px;
       pointer-events: none;
       z-index: 25;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
-      min-width: 180px;
+      min-width: 185px;
       display: none;
-      transform: translate(14px, 14px);
     }
 
     .atom-tooltip-header {
@@ -320,14 +304,16 @@
       align-items: center;
       gap: 8px;
       margin-bottom: 6px;
-      font-weight: 700;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border-color);
+      font-weight: 600;
       font-size: 12px;
       color: var(--text-primary);
     }
 
-    .atom-tooltip-badge {
-      width: 12px;
-      height: 12px;
+    .atom-tooltip-swatch {
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
       display: inline-block;
     }
@@ -335,24 +321,27 @@
     .atom-tooltip-row {
       display: flex;
       justify-content: space-between;
-      gap: 8px;
+      gap: 10px;
       color: var(--text-secondary);
-      line-height: 1.5;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      line-height: 1.6;
     }
 
     .atom-tooltip-row strong {
       color: var(--text-primary);
-      font-family: monospace;
+      font-weight: 500;
     }
 
-    /* Stable Multi-Row Toolbar Layout */
-    .viewer-toolbar-container {
+    /* Stable Toolbar Controls */
+    .viewer-controls {
+      padding: 12px 20px;
       display: flex;
       flex-direction: column;
       gap: 8px;
     }
 
-    .viewer-toolbar-row {
+    .toolbar-row {
       display: flex;
       gap: 6px;
       align-items: center;
@@ -360,230 +349,347 @@
     }
 
     .btn {
-      background-color: var(--bg-secondary);
+      font-family: var(--font-sans);
+      background-color: transparent;
       color: var(--text-primary);
       border: 1px solid var(--border-color);
-      border-radius: 6px;
-      padding: 0 12px;
-      height: 32px;
+      border-radius: var(--radius-control);
+      padding: 0 11px;
+      height: 30px;
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 500;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      text-align: center;
       white-space: nowrap;
       user-select: none;
-      box-sizing: border-box;
-      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+      transition: background-color 0.12s ease, border-color 0.12s ease, color 0.12s ease;
     }
 
     .btn:hover {
       background-color: var(--bg-hover);
-      border-color: var(--accent-blue);
+      border-color: var(--viz-teal);
     }
 
     .btn.active {
-      background-color: var(--accent-blue-bg);
-      color: var(--accent-blue);
-      border-color: var(--accent-blue);
+      background-color: var(--tint-teal);
+      color: var(--viz-teal);
+      border-color: var(--viz-teal);
     }
 
-    /* Fixed button geometries preventing physical reflow & shifting */
     .fixed-label-btn {
-      width: 110px;
-      min-width: 110px;
-      max-width: 110px;
+      width: 112px;
+      min-width: 112px;
+      max-width: 112px;
     }
 
     #btn-measure {
-      width: 80px;
-      min-width: 80px;
-      max-width: 80px;
+      width: 78px;
+      min-width: 78px;
+      max-width: 78px;
     }
 
     #btn-spin {
-      width: 65px;
-      min-width: 65px;
-      max-width: 65px;
+      width: 62px;
+      min-width: 62px;
+      max-width: 62px;
     }
 
-    .viewport-instructions {
+    .measure-readout {
+      font-family: var(--font-mono);
       font-size: 11px;
-      color: var(--text-muted);
-      line-height: 1.5;
-      display: flex;
+      color: var(--viz-amber);
+      background-color: var(--tint-amber);
+      border: 1px solid var(--viz-amber);
+      border-radius: var(--radius-control);
+      padding: 3px 8px;
+      display: none;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 6px;
     }
 
-    .measure-status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 11px;
-      font-weight: 600;
-      font-family: monospace;
-      background: var(--accent-amber-bg);
-      color: var(--accent-amber);
-      border: 1px solid var(--accent-amber);
-    }
-
-    /* Data Tables */
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-    }
-
-    .data-table th, .data-table td {
-      padding: 8px 12px;
-      text-align: left;
-      border-bottom: 1px solid var(--border-subtle);
-    }
-
-    .data-table th {
-      color: var(--text-secondary);
-      font-weight: 600;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .data-table td {
-      color: var(--text-primary);
-    }
-
-    .data-table tr:hover {
-      background-color: var(--bg-hover);
-    }
-
-    .code-cell {
-      font-family: monospace;
-      color: var(--accent-blue);
-      word-break: break-all;
-    }
-
-    /* Key Value Lists & Copy Buttons */
+    /* Monospaced Tabular Lists & Hairline Dividers (DESIGN.md Section 4) */
     .kv-list {
       display: flex;
       flex-direction: column;
-      gap: 6px;
     }
 
     .kv-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 6px 0;
-      border-bottom: 1px solid var(--border-subtle);
-      font-size: 13px;
+      padding: 9px 20px;
+      border-bottom: 1px solid var(--border-color);
+      gap: 12px;
+    }
+
+    .kv-item:last-child {
+      border-bottom: none;
     }
 
     .kv-key {
+      font-size: 12px;
       color: var(--text-secondary);
+      flex-shrink: 0;
     }
 
     .kv-val-group {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      min-width: 0;
     }
 
     .kv-val {
-      font-weight: 600;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 500;
       color: var(--text-primary);
-      font-family: monospace;
+      text-align: right;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Density / Threshold Mini-Bar (DESIGN.md Section 5) */
+    .metric-bar-track {
+      width: 56px;
+      height: 5px;
+      background-color: var(--border-color);
+      border-radius: 3px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .metric-bar-fill {
+      height: 100%;
+      border-radius: 3px;
     }
 
     .copy-btn {
-      background: none;
-      border: 1px solid var(--border-subtle);
+      font-family: var(--font-mono);
+      background-color: transparent;
+      border: 1px solid var(--border-color);
       color: var(--text-secondary);
-      padding: 3px 6px;
-      border-radius: 4px;
+      padding: 2px 7px;
+      border-radius: var(--radius-control);
       font-size: 11px;
       cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      transition: all 0.15s;
+      flex-shrink: 0;
+      transition: border-color 0.12s ease, color 0.12s ease;
     }
 
     .copy-btn:hover {
       color: var(--text-primary);
-      border-color: var(--accent-blue);
+      border-color: var(--viz-teal);
     }
 
     .copy-btn.copied {
-      color: var(--accent-emerald);
-      border-color: var(--accent-emerald);
+      color: var(--viz-emerald);
+      border-color: var(--viz-emerald);
     }
 
-    /* Radar Chart Container */
-    .chart-box {
+    /* Radar Visualization Area */
+    .chart-stage {
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      padding: 10px 0;
+      justify-content: center;
+      padding: 16px 20px;
+      gap: 12px;
+      flex: 1;
     }
 
-    .section-text {
-      font-size: 13px;
-      color: var(--text-secondary);
-      line-height: 1.6;
-    }
-
-    .pill-list {
+    .chart-legend {
       display: flex;
-      flex-wrap: wrap;
+      gap: 18px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
       gap: 6px;
-      margin-top: 6px;
     }
 
-    .pill {
-      font-size: 12px;
-      background-color: var(--bg-secondary);
-      color: var(--text-primary);
-      padding: 3px 10px;
-      border-radius: 12px;
-      border: 1px solid var(--border-color);
+    .legend-swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      display: inline-block;
     }
 
-    /* Footer */
-    footer {
-      border-top: 1px solid var(--border-subtle);
-      padding-top: 16px;
+    /* Section Dividers inside Bento Panels */
+    .sub-header {
+      padding: 10px 20px;
+      border-bottom: 1px solid var(--border-color);
+      border-top: 1px solid var(--border-color);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
+    }
+
+    .sub-header:first-child {
+      border-top: none;
+    }
+
+    /* Structured Statement Rows (GHS & Pharmacology) */
+    .statement-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .statement-row {
+      display: grid;
+      grid-template-columns: 88px 1fr;
+      gap: 12px;
+      padding: 9px 20px;
+      border-bottom: 1px solid var(--border-color);
       font-size: 12px;
-      color: var(--text-muted);
+      align-items: baseline;
+    }
+
+    .statement-row:last-child {
+      border-bottom: none;
+    }
+
+    .statement-code {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    .statement-text {
+      color: var(--text-primary);
+      line-height: 1.45;
+    }
+
+    .pharma-block {
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .pharma-block:last-child {
+      border-bottom: none;
+    }
+
+    .pharma-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+    }
+
+    .pharma-body {
+      font-size: 13px;
+      color: var(--text-primary);
+      line-height: 1.55;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .target-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 3px 9px;
+      border-radius: var(--radius-control);
+      background-color: var(--tint-indigo);
+      color: var(--viz-indigo);
+      border: 1px solid var(--viz-indigo);
+    }
+
+    /* Monospaced Data Tables (DESIGN.md Section 4) */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+
+    .data-table th,
+    .data-table td {
+      padding: 10px 20px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .data-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .data-table th {
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .data-table td {
+      color: var(--text-primary);
+    }
+
+    .data-table tbody tr:hover {
+      background-color: var(--bg-hover);
+    }
+
+    .code-id {
+      color: var(--viz-teal);
+      font-weight: 500;
+    }
+
+    .similarity-cell {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .similarity-track {
+      width: 72px;
+      height: 6px;
+      background-color: var(--border-color);
+      border-radius: 3px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .similarity-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--viz-teal), var(--viz-indigo));
+      border-radius: 3px;
     }
   </style>
 </head>
 <body class="dark-theme">
-  <div class="container">
-    <!-- Header with Chemical Identifiers and Theme Toggle -->
-    <header>
-      <div class="header-title">
-        <h1 id="compound-name">PubChem Molecular Dashboard</h1>
-        <div class="subtitle" id="compound-subtitle">Loading chemical entity data...</div>
+  <div class="dashboard-shell">
+    <!-- Top Header Bar -->
+    <header class="top-bar">
+      <div class="identity-block">
+        <h1 id="compound-name">Compound Evaluation</h1>
+        <div class="identity-meta" id="compound-subtitle">CID: -</div>
       </div>
-      <div class="header-controls">
-        <div class="header-badges">
-          <span class="badge badge-primary" id="badge-cid">CID: -</span>
-          <span class="badge" id="badge-ro5">Ro5: -</span>
-          <span class="badge" id="badge-ghs">GHS: -</span>
-        </div>
-        <!-- Light / Dark Mode Toggle (Clean Icon Only) -->
-        <button class="theme-toggle-btn" id="theme-toggle-btn" onclick="toggleTheme()" title="Toggle Light / Dark Theme">
-          <!-- Sun Icon (Active in Dark Mode to switch to Light) -->
+      <div class="header-actions">
+        <span class="alert-pill" id="badge-ro5"></span>
+        <span class="alert-pill" id="badge-ghs"></span>
+        <!-- Single Textless Minimalist Theme Switcher Icon Button -->
+        <button class="theme-toggle-btn" id="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle Light or Dark Theme">
           <svg class="theme-icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="5"></circle>
             <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -595,7 +701,6 @@
             <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
             <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
           </svg>
-          <!-- Moon Icon (Active in Light Mode to switch to Dark) -->
           <svg class="theme-icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
           </svg>
@@ -603,228 +708,211 @@
       </div>
     </header>
 
-    <!-- Top Grid: Interactive Molecular Visualization & Properties -->
-    <div class="grid-2">
-      <!-- Unified 3D Molecular View Card -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">3D Molecular View</div>
-          <span id="vis-status-tag" class="badge badge-primary">3D Conformer</span>
+    <!-- Row 1: 3D Molecular View & Physicochemical Descriptors -->
+    <section class="bento-grid-2">
+      <div class="bento-panel">
+        <div class="panel-header">
+          <h2 class="panel-title">3D Molecular View</h2>
+          <span class="panel-meta" id="conformer-coord-meta">3D Coordinates</span>
         </div>
 
-        <div class="viewport-box">
+        <div class="viewer-stage">
           <div id="molviewer">
             <canvas id="canvas-3d"></canvas>
           </div>
-          <!-- Hidden canvas for backward compatibility -->
-          <canvas id="physics-canvas" style="display: none;"></canvas>
+          <canvas id="physics-canvas" hidden aria-hidden="true"></canvas>
 
-          <!-- Floating Viewport HUD -->
           <div class="viewer-hud" id="viewer-hud">
-            <span id="hud-atoms">- Atoms</span>
-            <span id="hud-bonds">- Bonds</span>
+            <span id="hud-atoms">0 Atoms</span>
+            <span id="hud-bonds">0 Bonds</span>
             <span id="hud-zoom">100%</span>
           </div>
 
-          <!-- Atom Inspector Tooltip -->
           <div class="atom-tooltip" id="atom-tooltip"></div>
         </div>
 
-        <!-- Stable Structured Toolbar -->
-        <div class="viewer-toolbar-container">
-          <!-- Row 1: Visual Representation Modes & Labels -->
-          <div class="viewer-toolbar-row">
-            <button class="btn active" id="btn-ballstick" onclick="setStyle('ballstick')">Ball & Stick</button>
+        <div class="viewer-controls">
+          <div class="toolbar-row">
+            <button class="btn active" id="btn-ballstick" onclick="setStyle('ballstick')">Ball &amp; Stick</button>
             <button class="btn" id="btn-stick" onclick="setStyle('stick')">Stick</button>
             <button class="btn" id="btn-sphere" onclick="setStyle('sphere')">Spacefill</button>
             <button class="btn" id="btn-wireframe" onclick="setStyle('line')">Wireframe</button>
             <button class="btn" id="btn-surface" onclick="toggleSurface()">Surface</button>
             <button class="btn fixed-label-btn" id="btn-label-toggle" onclick="toggleLabels()">Labels: Symbol</button>
           </div>
-
-          <!-- Row 2: Interactive Tools & Camera Navigation -->
-          <div class="viewer-toolbar-row">
+          <div class="toolbar-row">
             <button class="btn" id="btn-measure" onclick="toggleMeasurement()">Measure</button>
             <button class="btn" id="btn-spin" onclick="toggleSpin()">Spin</button>
-            <button class="btn" id="btn-zoom-in" onclick="zoomView(1.15)" title="Zoom In">Zoom In (+)</button>
-            <button class="btn" id="btn-zoom-out" onclick="zoomView(0.85)" title="Zoom Out">Zoom Out (-)</button>
-            <button class="btn" id="btn-rotate-left" onclick="rotateViewY(-15)" title="Rotate Left">Rotate Left</button>
-            <button class="btn" id="btn-rotate-right" onclick="rotateViewY(15)" title="Rotate Right">Rotate Right</button>
-            <button class="btn" id="btn-center" onclick="resetView()" title="Center & Reset View">Center</button>
-            <button class="btn" id="btn-export" onclick="exportSnapshot()" title="Export PNG Snapshot">Export PNG</button>
+            <button class="btn" id="btn-zoom-in" onclick="zoomView(1.15)">Zoom +</button>
+            <button class="btn" id="btn-zoom-out" onclick="zoomView(0.85)">Zoom -</button>
+            <button class="btn" id="btn-rotate-left" onclick="rotateViewY(-15)">Rotate L</button>
+            <button class="btn" id="btn-rotate-right" onclick="rotateViewY(15)">Rotate R</button>
+            <button class="btn" id="btn-center" onclick="resetView()">Reset</button>
+            <button class="btn" id="btn-export" onclick="exportSnapshot()">Export PNG</button>
+            <span id="measurement-hint" class="measure-readout">Select 2 atoms</span>
           </div>
         </div>
+      </div>
 
-        <!-- Instructions and Active Measurement Feedback Bar -->
-        <div class="viewport-instructions">
-          <span id="nav-instructions">Left-click + drag to orbit &bull; Right-click / Shift + drag to pan &bull; Scroll to zoom &bull; Hover over atoms for details</span>
-          <span id="measurement-hint" class="measure-status-badge" style="display: none;">Click 2 atoms to measure distance</span>
+      <div class="bento-panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Physicochemical Descriptors</h2>
+          <span class="panel-meta" id="badge-cid">CID: -</span>
+        </div>
+        <div class="kv-list" id="properties-list"></div>
+      </div>
+    </section>
+
+    <!-- Row 2: Oral Drug-Likeness Radar & Rule Compliance -->
+    <section class="bento-grid-equal">
+      <div class="bento-panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Oral Drug-Likeness Radar</h2>
+          <span class="panel-meta">Normalized Boundary Ratio</span>
+        </div>
+        <div class="chart-stage">
+          <svg id="radar-svg" width="330" height="310" viewBox="0 0 330 310"></svg>
+          <div class="chart-legend">
+            <span class="legend-item">
+              <span class="legend-swatch" style="background-color: var(--viz-teal);"></span>
+              Compound Profile
+            </span>
+            <span class="legend-item">
+              <span class="legend-swatch" style="background-color: var(--viz-amber);"></span>
+              Oral Threshold Limit
+            </span>
+            <span class="legend-item">
+              <span class="legend-swatch" style="background-color: var(--viz-rose);"></span>
+              Threshold Exceeded
+            </span>
+          </div>
         </div>
       </div>
 
-      <!-- Physicochemical Properties & Descriptors -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Physicochemical Descriptors</div>
-          <span style="font-size: 11px; color: var(--text-secondary);">Computed via PubChem</span>
-        </div>
-        <div class="kv-list" id="properties-list">
-          <!-- Injected via JavaScript -->
-        </div>
-      </div>
-    </div>
-
-    <!-- Middle Grid: Drug-Likeness Assessment & Radar Chart -->
-    <div class="grid-2">
-      <!-- Radar Chart Card -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Oral Drug-Likeness Radar</div>
-          <span style="font-size: 11px; color: var(--accent-emerald);">Lipinski & Veber Domain</span>
-        </div>
-        <div class="chart-box">
-          <svg id="radar-svg" width="340" height="340" viewBox="0 0 340 340"></svg>
-        </div>
-        <div style="font-size: 12px; color: var(--text-muted); text-align: center;">
-          Dashed boundary indicates oral bioavailability threshold. Shaded polygon indicates target compound.
-        </div>
-      </div>
-
-      <!-- Medicinal Chemistry Rule Compliance -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Medicinal Chemistry Assessment</div>
+      <div class="bento-panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Rule Compliance</h2>
+          <span class="panel-meta">Lipinski &amp; Veber</span>
         </div>
         <div>
-          <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--accent-emerald);">Lipinski Rule of Five (Ro5)</h4>
-          <div class="kv-list" style="margin-bottom: 16px;">
+          <div class="sub-header">
+            <span>Lipinski Rule of Five</span>
+            <span id="ro5-status">-</span>
+          </div>
+          <div class="kv-list">
             <div class="kv-item">
-              <span class="kv-key">Compliance Status</span>
-              <span class="kv-val" id="ro5-status">-</span>
-            </div>
-            <div class="kv-item">
-              <span class="kv-key">Violation Count</span>
+              <span class="kv-key">Violations</span>
               <span class="kv-val" id="ro5-violations">-</span>
             </div>
             <div class="kv-item">
-              <span class="kv-key">Specific Boundary Flags</span>
-              <span class="kv-val" id="ro5-details" style="font-family: inherit; font-size: 12px;">None</span>
+              <span class="kv-key">Threshold Evaluation</span>
+              <span class="kv-val" id="ro5-details">-</span>
             </div>
           </div>
 
-          <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--accent-purple);">Veber Oral Bioavailability Criteria</h4>
+          <div class="sub-header">
+            <span>Veber Bioavailability Criteria</span>
+            <span id="veber-status">-</span>
+          </div>
           <div class="kv-list">
             <div class="kv-item">
-              <span class="kv-key">Compliance Status</span>
-              <span class="kv-val" id="veber-status">-</span>
-            </div>
-            <div class="kv-item">
-              <span class="kv-key">Violation Count</span>
+              <span class="kv-key">Violations</span>
               <span class="kv-val" id="veber-violations">-</span>
             </div>
             <div class="kv-item">
-              <span class="kv-key">Specific Boundary Flags</span>
-              <span class="kv-val" id="veber-details" style="font-family: inherit; font-size: 12px;">None</span>
+              <span class="kv-key">Threshold Evaluation</span>
+              <span class="kv-val" id="veber-details">-</span>
             </div>
           </div>
+
+          <div class="sub-header">
+            <span>Boundary Reference Matrix</span>
+            <span>Compound / Limit</span>
+          </div>
+          <div class="kv-list" id="rule-matrix-list"></div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- Safety & Pharmacology Grid -->
-    <div class="grid-2">
-      <!-- GHS Hazard Safety Card -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">GHS Safety & Hazard Analysis</div>
-          <span class="badge" id="safety-signal-badge">SIGNAL: -</span>
+    <!-- Row 3: GHS Hazard Classification & Clinical Pharmacology -->
+    <section class="bento-grid-equal">
+      <div class="bento-panel">
+        <div class="panel-header">
+          <h2 class="panel-title">GHS Hazard Classification</h2>
+          <span class="alert-pill" id="safety-signal-badge"></span>
         </div>
         <div>
-          <div style="font-size: 12px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 6px;">Hazard Statements</div>
-          <div class="pill-list" id="hazard-statements" style="margin-bottom: 16px;">
-            <!-- Injected via JavaScript -->
+          <div class="sub-header">
+            <span>Hazard Statements</span>
+            <span>H-Code</span>
           </div>
-          <div style="font-size: 12px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 6px;">Precautionary Codes</div>
-          <div class="pill-list" id="precautionary-statements">
-            <!-- Injected via JavaScript -->
+          <div class="statement-list" id="hazard-statements"></div>
+          <div class="sub-header">
+            <span>Precautionary Statements</span>
+            <span>P-Code</span>
           </div>
+          <div class="statement-list" id="precautionary-statements"></div>
         </div>
       </div>
 
-      <!-- Clinical Pharmacology & Mechanism -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Clinical Pharmacology</div>
-          <span style="font-size: 11px; color: var(--accent-blue);">Mechanism & Target</span>
+      <div class="bento-panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Clinical Pharmacology</h2>
         </div>
         <div>
-          <div style="margin-bottom: 14px;">
-            <div style="font-size: 12px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 4px;">Primary Mechanism of Action</div>
-            <div class="section-text" id="pharma-moa">-</div>
+          <div class="pharma-block">
+            <div class="pharma-label">Mechanism of Action</div>
+            <div class="pharma-body" id="pharma-moa">-</div>
           </div>
-          <div style="margin-bottom: 14px;">
-            <div style="font-size: 12px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 4px;">Therapeutic Indications</div>
-            <div class="section-text" id="pharma-indications">-</div>
+          <div class="pharma-block">
+            <div class="pharma-label">Therapeutic Indications</div>
+            <div class="pharma-body" id="pharma-indications">-</div>
           </div>
-          <div>
-            <div style="font-size: 12px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 4px;">Biological Targets</div>
-            <div class="pill-list" id="pharma-targets">
-              <!-- Injected via JavaScript -->
-            </div>
+          <div class="pharma-block">
+            <div class="pharma-label">Biological Targets</div>
+            <div class="tag-row" id="pharma-targets"></div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- Bottom Grid: BioAssays & Structural Analogs -->
-    <div class="grid-2">
-      <!-- BioAssay Activity Card -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">PubChem BioAssay Activity</div>
-          <span style="font-size: 11px; color: var(--text-secondary);" id="bioassay-ratio">Tested: - | Active: -</span>
+    <!-- Row 4: BioAssay Concordance & Structural Analogs -->
+    <section class="bento-grid-equal">
+      <div class="bento-panel">
+        <div class="panel-header">
+          <h2 class="panel-title">BioAssay Concordance</h2>
+          <span class="panel-meta" id="bioassay-ratio">Tested: 0 | Active: 0</span>
         </div>
         <table class="data-table">
           <thead>
             <tr>
               <th>AID</th>
-              <th>Assay Target / Assay Description</th>
-              <th>Activity Metric</th>
+              <th>Target / Assay</th>
+              <th>Outcome</th>
             </tr>
           </thead>
-          <tbody id="bioassays-tbody">
-            <!-- Injected via JavaScript -->
-          </tbody>
+          <tbody id="bioassays-tbody"></tbody>
         </table>
       </div>
 
-      <!-- Structural Analogs Card -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Similar Chemical Analogs</div>
-          <span style="font-size: 11px; color: var(--text-secondary);">2D Tanimoto Similarity</span>
+      <div class="bento-panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Structural Analogs</h2>
+          <span class="panel-meta">2D Tanimoto Index</span>
         </div>
         <table class="data-table">
           <thead>
             <tr>
               <th>CID</th>
-              <th>Nomenclature</th>
+              <th>IUPAC Nomenclature</th>
               <th>Formula</th>
               <th>Similarity</th>
             </tr>
           </thead>
-          <tbody id="analogs-tbody">
-            <!-- Injected via JavaScript -->
-          </tbody>
+          <tbody id="analogs-tbody"></tbody>
         </table>
       </div>
-    </div>
-
-    <!-- Footer -->
-    <footer>
-      <span>PubChem Database Visualizer</span>
-      <span>Chemical Informatics & Molecular Evaluation</span>
-    </footer>
+    </section>
   </div>
 
   <script>
@@ -832,7 +920,6 @@
     const DATA = {"cid": 2519, "identifiers": {"iupac_name": "1,3,7-trimethylpurine-2,6-dione", "canonical_smiles": "CN1C=NC2=C1C(=O)N(C(=O)N2C)C", "isomeric_smiles": "CN1C=NC2=C1C(=O)N(C(=O)N2C)C", "molecular_formula": "C8H10N4O2", "inchi": "InChI=1S/C8H10N4O2/c1-10-4-9-6-5(10)7(13)12(3)8(14)11(6)2/h4H,1-3H3", "inchi_key": "RYYVLZVUVIJVGH-UHFFFAOYSA-N", "query_input": "caffeine"}, "properties": {"molecular_weight": 194.19, "xlogp": -0.1, "h_bond_donors": 0, "h_bond_acceptors": 3, "tpsa": 58.4, "rotatable_bonds": 0, "heavy_atoms": 14, "exact_mass": 194.08, "complexity": 293.0}, "drug_likeness": {"lipinski_rule_of_five": {"compliant": true, "violations": 0, "violation_details": [], "status": "COMPLIANT"}, "veber_rule": {"compliant": true, "violations": 0, "violation_details": [], "status": "COMPLIANT"}}, "safety": {"signal_word": "WARNING", "hazard_statements": [{"code": "H302", "statement": "Harmful if swallowed"}], "precautionary_statements": [{"code": "P264", "statement": "Wash hands thoroughly after handling."}, {"code": "P270", "statement": "Do not eat, drink or smoke when using this product."}, {"code": "P301+P312", "statement": "IF SWALLOWED: Call a POISON CENTER/doctor if you feel unwell."}], "pictograms": ["GHS07-harmful"]}, "pharmacology": {"indications": "Indicated for the management of apnea of prematurity and as a central nervous system stimulant.", "mechanism_of_action": "Reversible competitive antagonist of adenosine A1, A2A, and A2B receptors. Non-selective inhibitor of phosphodiesterase (PDE) enzymes.", "targets": ["Adenosine A1 Receptor", "Adenosine A2A Receptor", "Phosphodiesterase"]}, "bioassays": {"total_tested": 780, "total_active": 12, "active_assays": [{"aid": 1159610, "name": "Adenosine A2A Radioligand Binding", "target": "ADORA2A", "activity": "Active (Ki 12.0 uM)"}, {"aid": 1159611, "name": "Phosphodiesterase 4 Inhibition Screen", "target": "PDE4D", "activity": "Active (IC50 500.0 uM)"}]}, "analogs": [{"cid": 2153, "iupac_name": "theophylline", "molecular_formula": "C7H8N4O2", "similarity_score": 0.92}, {"cid": 5429, "iupac_name": "theobromine", "molecular_formula": "C7H8N4O2", "similarity_score": 0.91}], "has_3d_conformer": true};
     const SDF_3D = "2519\n  -OEChem-09152621003D\n\n 14 15  0     0  0  0  0  0  0999 V2000\n   -0.5480    1.3480    0.0220 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.7320    0.7960   -0.0030 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.8460    1.6370    0.0010 N   0  0  0  0  0  0  0  0  0  0  0  0\n    1.6910    3.0130    0.0290 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.4190    3.5570    0.0530 N   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.6970    2.7230    0.0490 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.8990   -0.6720   -0.0350 N   0  0  0  0  0  0  0  0  0  0  0  0\n    2.0070   -1.1680   -0.0390 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.2010   -1.4280   -0.0590 N   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.6880    0.5470    0.0160 O   0  0  0  0  0  0  0  0  0  0  0  0\n   -2.0220   -0.3440   -0.9630 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.3780   -0.5750   -1.9560 O   0  0  0  0  0  0  0  0  0  0  0  0\n   -3.3280   -1.0770   -0.7020 C   0  0  0  0  0  0  0  0  0  0  0  0\n    3.2120    0.9550    0.0100 C   0  0  0  0  0  0  0  0  0  0  0  0\n  1  2  1  0  0  0  0\n  2  3  1  0  0  0  0\n  3  4  1  0  0  0  0\n  4  5  1  0  0  0  0\n  5  6  1  0  0  0  0\n  6  1  2  0  0  0  0\n  2  7  1  0  0  0  0\n  7  8  1  0  0  0  0\n  8  9  2  0  0  0  0\n  9  1  1  0  0  0  0\n  6 10  2  0  0  0  0\n  4 12  2  0  0  0  0\n  5 11  1  0  0  0  0\n  7 13  1  0  0  0  0\n  3 14  1  0  0  0  0\nM  END\n$$$$\n";
 
-    let viewer = null;
     let currentStyle = 'ballstick';
 
     // ==========================================
@@ -845,8 +932,7 @@
 
     function toggleTheme() {
       const isDark = document.body.classList.contains('dark-theme');
-      const newTheme = isDark ? 'light' : 'dark';
-      setTheme(newTheme);
+      setTheme(isDark ? 'light' : 'dark');
     }
 
     function setTheme(theme) {
@@ -877,10 +963,8 @@
         setTimeout(() => {
           btn.textContent = origText;
           btn.classList.remove('copied');
-        }, 1800);
-      }).catch(err => {
-        console.error('Clipboard copy failed:', err);
-      });
+        }, 1600);
+      }).catch(() => {});
     }
 
     // ==========================================
@@ -894,190 +978,291 @@
         return;
       }
 
-      // Populate Header
-      document.getElementById('compound-name').textContent = DATA.identifiers.iupac_name || 'Compound Profile';
-      document.getElementById('compound-subtitle').textContent = 
-        `CID: ${DATA.cid} | Formula: ${DATA.identifiers.molecular_formula} | InChIKey: ${DATA.identifiers.inchi_key}`;
-      document.getElementById('badge-cid').textContent = `CID: ${DATA.cid}`;
+      const ids = DATA.identifiers || {};
+      const p = DATA.properties || {};
 
-      // Ro5 Badge
+      // Header Identity
+      document.getElementById('compound-name').textContent = ids.iupac_name || `CID ${DATA.cid}`;
+      document.getElementById('compound-subtitle').textContent =
+        `CID ${DATA.cid}  ·  ${ids.molecular_formula || '-'}  ·  ${ids.inchi_key || '-'}`;
+      document.getElementById('badge-cid').textContent = `CID ${DATA.cid}`;
+      document.getElementById('conformer-coord-meta').textContent =
+        DATA.has_3d_conformer ? '3D Conformer Coordinates' : '2D Coordinate Projection';
+
+      // Status Pills: Only display when in warning or critical/violation state (DESIGN.md Section 1)
       const ro5Badge = document.getElementById('badge-ro5');
-      const ro5Status = DATA.drug_likeness.lipinski_rule_of_five.status;
-      ro5Badge.textContent = `Ro5: ${ro5Status}`;
-      if (ro5Status === 'COMPLIANT') ro5Badge.className = 'badge badge-success';
-      else if (ro5Status === 'BORDERLINE') ro5Badge.className = 'badge badge-warning';
-      else ro5Badge.className = 'badge badge-danger';
+      const ro5 = (DATA.drug_likeness && DATA.drug_likeness.lipinski_rule_of_five) || { status: 'COMPLIANT', violations: 0, violation_details: [] };
+      if (ro5.status === 'BORDERLINE') {
+        ro5Badge.textContent = `Ro5 Borderline (${ro5.violations})`;
+        ro5Badge.className = 'alert-pill state-warning';
+      } else if (ro5.status === 'VIOLATION') {
+        ro5Badge.textContent = `Ro5 Violation (${ro5.violations})`;
+        ro5Badge.className = 'alert-pill state-critical';
+      } else {
+        ro5Badge.className = 'alert-pill';
+        ro5Badge.textContent = '';
+      }
 
-      // GHS Badge
       const ghsBadge = document.getElementById('badge-ghs');
       const signalWord = (DATA.safety && DATA.safety.signal_word) || 'NOT_CLASSIFIED';
-      ghsBadge.textContent = `GHS: ${signalWord}`;
-      if (signalWord === 'DANGER') ghsBadge.className = 'badge badge-danger';
-      else if (signalWord === 'WARNING') ghsBadge.className = 'badge badge-warning';
-      else ghsBadge.className = 'badge badge-neutral';
+      if (signalWord === 'DANGER') {
+        ghsBadge.textContent = 'GHS: DANGER';
+        ghsBadge.className = 'alert-pill state-critical';
+      } else if (signalWord === 'WARNING') {
+        ghsBadge.textContent = 'GHS: WARNING';
+        ghsBadge.className = 'alert-pill state-warning';
+      } else {
+        ghsBadge.className = 'alert-pill';
+        ghsBadge.textContent = '';
+      }
 
-      // Populate Descriptors
+      // Populate Physicochemical Descriptors
       const propsList = document.getElementById('properties-list');
-      const p = DATA.properties;
-      const ids = DATA.identifiers;
+      const renderBar = (val, max) => {
+        if (val === null || val === undefined) return '';
+        const pct = Math.min(Math.max((val / max) * 100, 4), 100);
+        const over = val > max;
+        const color = over ? 'var(--viz-rose)' : 'var(--viz-teal)';
+        return `<div class="metric-bar-track"><div class="metric-bar-fill" style="width:${pct.toFixed(0)}%;background:${color};"></div></div>`;
+      };
+
       propsList.innerHTML = `
-        <div class="kv-item">
-          <span class="kv-key">IUPAC Name</span>
-          <span class="kv-val" style="font-family: inherit; font-size: 12px; text-align: right; max-width: 260px;">${ids.iupac_name || '-'}</span>
-        </div>
         <div class="kv-item">
           <span class="kv-key">Molecular Formula</span>
           <div class="kv-val-group">
             <span class="kv-val">${ids.molecular_formula || '-'}</span>
-            <button class="copy-btn" onclick="copyText(this, '${ids.molecular_formula}')">Copy</button>
+            <button class="copy-btn" onclick="copyText(this, '${ids.molecular_formula || ''}')">Copy</button>
           </div>
         </div>
         <div class="kv-item">
           <span class="kv-key">Canonical SMILES</span>
           <div class="kv-val-group">
-            <span class="kv-val code-cell" style="font-size: 11px; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${ids.canonical_smiles || '-'}</span>
-            <button class="copy-btn" onclick="copyText(this, '${ids.canonical_smiles}')">Copy</button>
+            <span class="kv-val" style="max-width: 190px;">${ids.canonical_smiles || '-'}</span>
+            <button class="copy-btn" onclick="copyText(this, '${ids.canonical_smiles || ''}')">Copy</button>
           </div>
         </div>
         <div class="kv-item">
           <span class="kv-key">InChIKey</span>
           <div class="kv-val-group">
-            <span class="kv-val code-cell" style="font-size: 11px;">${ids.inchi_key || '-'}</span>
-            <button class="copy-btn" onclick="copyText(this, '${ids.inchi_key}')">Copy</button>
+            <span class="kv-val">${ids.inchi_key || '-'}</span>
+            <button class="copy-btn" onclick="copyText(this, '${ids.inchi_key || ''}')">Copy</button>
           </div>
         </div>
         <div class="kv-item">
           <span class="kv-key">Molecular Weight</span>
-          <span class="kv-val">${p.molecular_weight !== null ? p.molecular_weight.toFixed(2) + ' g/mol' : '-'}</span>
+          <div class="kv-val-group">
+            ${renderBar(p.molecular_weight, 500)}
+            <span class="kv-val">${p.molecular_weight !== null && p.molecular_weight !== undefined ? p.molecular_weight.toFixed(2) + ' g/mol' : '-'}</span>
+          </div>
         </div>
         <div class="kv-item">
           <span class="kv-key">Partition Coefficient (XLogP)</span>
-          <span class="kv-val">${p.xlogp !== null ? p.xlogp.toFixed(2) : 'N/A'}</span>
+          <div class="kv-val-group">
+            ${renderBar(p.xlogp !== null && p.xlogp !== undefined ? Math.max(0, p.xlogp) : null, 5.0)}
+            <span class="kv-val">${p.xlogp !== null && p.xlogp !== undefined ? p.xlogp.toFixed(2) : 'N/A'}</span>
+          </div>
         </div>
         <div class="kv-item">
-          <span class="kv-key">Hydrogen Bond Donors (HBD)</span>
-          <span class="kv-val">${p.h_bond_donors !== null ? p.h_bond_donors : '-'}</span>
+          <span class="kv-key">H-Bond Donors (HBD)</span>
+          <div class="kv-val-group">
+            ${renderBar(p.h_bond_donors, 5)}
+            <span class="kv-val">${p.h_bond_donors !== null && p.h_bond_donors !== undefined ? p.h_bond_donors : '-'}</span>
+          </div>
         </div>
         <div class="kv-item">
-          <span class="kv-key">Hydrogen Bond Acceptors (HBA)</span>
-          <span class="kv-val">${p.h_bond_acceptors !== null ? p.h_bond_acceptors : '-'}</span>
+          <span class="kv-key">H-Bond Acceptors (HBA)</span>
+          <div class="kv-val-group">
+            ${renderBar(p.h_bond_acceptors, 10)}
+            <span class="kv-val">${p.h_bond_acceptors !== null && p.h_bond_acceptors !== undefined ? p.h_bond_acceptors : '-'}</span>
+          </div>
         </div>
         <div class="kv-item">
           <span class="kv-key">Polar Surface Area (TPSA)</span>
-          <span class="kv-val">${p.tpsa !== null ? p.tpsa.toFixed(1) + ' Å²' : '-'}</span>
+          <div class="kv-val-group">
+            ${renderBar(p.tpsa, 140)}
+            <span class="kv-val">${p.tpsa !== null && p.tpsa !== undefined ? p.tpsa.toFixed(1) + ' Å²' : '-'}</span>
+          </div>
         </div>
         <div class="kv-item">
           <span class="kv-key">Rotatable Bonds</span>
-          <span class="kv-val">${p.rotatable_bonds !== null ? p.rotatable_bonds : '-'}</span>
+          <div class="kv-val-group">
+            ${renderBar(p.rotatable_bonds, 10)}
+            <span class="kv-val">${p.rotatable_bonds !== null && p.rotatable_bonds !== undefined ? p.rotatable_bonds : '-'}</span>
+          </div>
         </div>
         <div class="kv-item">
           <span class="kv-key">Heavy Atom Count</span>
-          <span class="kv-val">${p.heavy_atoms !== null ? p.heavy_atoms : '-'}</span>
+          <span class="kv-val">${p.heavy_atoms !== null && p.heavy_atoms !== undefined ? p.heavy_atoms : '-'}</span>
+        </div>
+        <div class="kv-item">
+          <span class="kv-key">Exact Mass</span>
+          <span class="kv-val">${p.exact_mass !== null && p.exact_mass !== undefined ? Number(p.exact_mass).toFixed(4) + ' Da' : '-'}</span>
         </div>
         <div class="kv-item">
           <span class="kv-key">Structural Complexity</span>
-          <span class="kv-val">${p.complexity !== null ? p.complexity.toFixed(1) : '-'}</span>
+          <span class="kv-val">${p.complexity !== null && p.complexity !== undefined ? p.complexity.toFixed(1) : '-'}</span>
         </div>
       `;
 
-      // Populate Ro5 & Veber Compliance
-      const ro5 = DATA.drug_likeness.lipinski_rule_of_five;
-      const veber = DATA.drug_likeness.veber_rule;
+      // Populate Rule Compliance
+      const veber = (DATA.drug_likeness && DATA.drug_likeness.veber_rule) || { status: 'COMPLIANT', violations: 0, violation_details: [] };
 
-      document.getElementById('ro5-status').textContent = ro5.status;
-      document.getElementById('ro5-status').style.color = ro5.compliant ? 'var(--accent-emerald)' : 'var(--accent-rose)';
+      const ro5StatusEl = document.getElementById('ro5-status');
+      ro5StatusEl.textContent = ro5.status;
+      ro5StatusEl.style.color = ro5.compliant ? 'var(--viz-emerald)' : 'var(--viz-rose)';
       document.getElementById('ro5-violations').textContent = `${ro5.violations} / 4`;
-      document.getElementById('ro5-details').textContent = ro5.violation_details.length > 0 ? ro5.violation_details.join('; ') : 'All 4 physicochemical thresholds satisfied';
+      document.getElementById('ro5-details').textContent =
+        ro5.violation_details && ro5.violation_details.length > 0
+          ? ro5.violation_details.join('; ')
+          : 'MW ≤ 500, XLogP ≤ 5, HBD ≤ 5, HBA ≤ 10';
 
-      document.getElementById('veber-status').textContent = veber.status;
-      document.getElementById('veber-status').style.color = veber.compliant ? 'var(--accent-emerald)' : 'var(--accent-rose)';
+      const veberStatusEl = document.getElementById('veber-status');
+      veberStatusEl.textContent = veber.status;
+      veberStatusEl.style.color = veber.compliant ? 'var(--viz-emerald)' : 'var(--viz-rose)';
       document.getElementById('veber-violations').textContent = `${veber.violations} / 2`;
-      document.getElementById('veber-details').textContent = veber.violation_details.length > 0 ? veber.violation_details.join('; ') : 'Both rotatable bonds (≤10) and TPSA (≤140 Å²) satisfied';
+      document.getElementById('veber-details').textContent =
+        veber.violation_details && veber.violation_details.length > 0
+          ? veber.violation_details.join('; ')
+          : 'RotB ≤ 10, TPSA ≤ 140 Å²';
+
+      const matrixEl = document.getElementById('rule-matrix-list');
+      if (matrixEl) {
+        const checks = [
+          { name: 'Molecular Weight', val: p.molecular_weight !== null ? `${p.molecular_weight.toFixed(1)} Da` : '-', limit: '≤ 500 Da', ok: (p.molecular_weight || 0) <= 500 },
+          { name: 'XLogP', val: p.xlogp !== null ? p.xlogp.toFixed(2) : '-', limit: '≤ 5.0', ok: (p.xlogp || 0) <= 5.0 },
+          { name: 'H-Bond Donors', val: p.h_bond_donors, limit: '≤ 5', ok: (p.h_bond_donors || 0) <= 5 },
+          { name: 'H-Bond Acceptors', val: p.h_bond_acceptors, limit: '≤ 10', ok: (p.h_bond_acceptors || 0) <= 10 },
+          { name: 'TPSA', val: p.tpsa !== null ? `${p.tpsa.toFixed(1)} Å²` : '-', limit: '≤ 140 Å²', ok: (p.tpsa || 0) <= 140 },
+          { name: 'Rotatable Bonds', val: p.rotatable_bonds, limit: '≤ 10', ok: (p.rotatable_bonds || 0) <= 10 }
+        ];
+        matrixEl.innerHTML = checks.map(c => `
+          <div class="kv-item">
+            <span class="kv-key">${c.name}</span>
+            <span class="kv-val" style="color: ${c.ok ? 'var(--text-primary)' : 'var(--viz-rose)'};">${c.val} <span style="color: var(--text-secondary);">/ ${c.limit}</span></span>
+          </div>
+        `).join('');
+      }
 
       // Render Radar Chart
       renderRadarChart(p);
 
-      // Populate Safety
+      // Populate GHS Hazard Classification
       const safetyBadge = document.getElementById('safety-signal-badge');
-      safetyBadge.textContent = `SIGNAL: ${signalWord}`;
-      safetyBadge.className = signalWord === 'DANGER' ? 'badge badge-danger' : (signalWord === 'WARNING' ? 'badge badge-warning' : 'badge badge-neutral');
+      if (signalWord === 'DANGER') {
+        safetyBadge.textContent = 'DANGER';
+        safetyBadge.className = 'alert-pill state-critical';
+      } else if (signalWord === 'WARNING') {
+        safetyBadge.textContent = 'WARNING';
+        safetyBadge.className = 'alert-pill state-warning';
+      } else {
+        safetyBadge.className = 'alert-pill';
+        safetyBadge.textContent = '';
+      }
 
       const hazardDiv = document.getElementById('hazard-statements');
       if (DATA.safety && DATA.safety.hazard_statements && DATA.safety.hazard_statements.length > 0) {
-        hazardDiv.innerHTML = DATA.safety.hazard_statements.map(h => 
-          `<span class="pill" style="border-color: var(--accent-rose); color: var(--accent-rose);">${h.code}: ${h.statement}</span>`
-        ).join('');
+        hazardDiv.innerHTML = DATA.safety.hazard_statements.map(h => `
+          <div class="statement-row">
+            <span class="statement-code" style="color: var(--viz-rose);">${h.code}</span>
+            <span class="statement-text">${h.statement}</span>
+          </div>
+        `).join('');
       } else {
-        hazardDiv.innerHTML = '<span class="section-text">No GHS hazard statements classified.</span>';
+        hazardDiv.innerHTML = '<div class="statement-row"><span class="statement-code" style="color: var(--text-secondary);">NONE</span><span class="statement-text" style="color: var(--text-secondary);">No mandatory GHS hazard classifications filed.</span></div>';
       }
 
       const precDiv = document.getElementById('precautionary-statements');
       if (DATA.safety && DATA.safety.precautionary_statements && DATA.safety.precautionary_statements.length > 0) {
-        precDiv.innerHTML = DATA.safety.precautionary_statements.map(pc => 
-          `<span class="pill">${pc}</span>`
-        ).join('');
+        precDiv.innerHTML = DATA.safety.precautionary_statements.map(pc => {
+          if (typeof pc === 'object' && pc !== null) {
+            return `
+              <div class="statement-row">
+                <span class="statement-code" style="color: var(--viz-amber);">${pc.code || 'P-CODE'}</span>
+                <span class="statement-text">${pc.statement || ''}</span>
+              </div>
+            `;
+          }
+          const parts = String(pc).split(':');
+          const code = parts.length > 1 ? parts[0].trim() : 'PRECAUTION';
+          const text = parts.length > 1 ? parts.slice(1).join(':').trim() : String(pc);
+          return `
+            <div class="statement-row">
+              <span class="statement-code" style="color: var(--viz-amber);">${code}</span>
+              <span class="statement-text">${text}</span>
+            </div>
+          `;
+        }).join('');
       } else {
-        precDiv.innerHTML = '<span class="section-text">No precautionary codes reported.</span>';
+        precDiv.innerHTML = '<div class="statement-row"><span class="statement-code" style="color: var(--text-secondary);">NONE</span><span class="statement-text" style="color: var(--text-secondary);">No precautionary codes filed.</span></div>';
       }
 
-      // Populate Pharmacology
+      // Populate Clinical Pharmacology
       const pharma = DATA.pharmacology || {};
-      document.getElementById('pharma-moa').textContent = pharma.mechanism_of_action || 'Specific enzymatic or receptor mechanism not documented in current dataset.';
-      document.getElementById('pharma-indications').textContent = pharma.indications || 'Approved indications not cataloged or investigational entity.';
-      
+      document.getElementById('pharma-moa').textContent = pharma.mechanism_of_action || 'Not cataloged.';
+      document.getElementById('pharma-indications').textContent = pharma.indications || 'Not cataloged.';
+
       const targetsDiv = document.getElementById('pharma-targets');
       if (pharma.targets && pharma.targets.length > 0) {
-        targetsDiv.innerHTML = pharma.targets.map(t => `<span class="pill" style="border-color: var(--accent-blue); color: var(--accent-blue);">${t}</span>`).join('');
+        targetsDiv.innerHTML = pharma.targets.map(t => `<span class="target-tag">${t}</span>`).join('');
       } else {
-        targetsDiv.innerHTML = '<span class="section-text">No primary biological targets cataloged.</span>';
+        targetsDiv.innerHTML = '<span style="font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary);">None cataloged</span>';
       }
 
-      // Populate BioAssays
+      // Populate BioAssays (Monospaced table, no decorative "Active" pills on every row)
       const bio = DATA.bioassays || {};
-      document.getElementById('bioassay-ratio').textContent = `Tested: ${bio.total_tested || 0} | Active Hits: ${bio.total_active || 0}`;
+      document.getElementById('bioassay-ratio').textContent = `Tested: ${bio.total_tested || 0} | Active: ${bio.total_active || 0}`;
       const assayTbody = document.getElementById('bioassays-tbody');
       if (bio.active_assays && bio.active_assays.length > 0) {
         assayTbody.innerHTML = bio.active_assays.map(a => `
           <tr>
-            <td class="code-cell">${a.aid}</td>
-            <td>${a.target || a.name || 'BioAssay Screen'}</td>
-            <td><span class="badge badge-success">${a.activity}</span></td>
+            <td class="code-id">${a.aid}</td>
+            <td>${a.target ? `${a.target} — ${a.name || ''}` : (a.name || 'BioAssay')}</td>
+            <td style="color: var(--viz-emerald);">${a.activity}</td>
           </tr>
         `).join('');
       } else {
-        assayTbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--text-muted); padding: 16px;">No active bioassay hits reported</td></tr>';
+        assayTbody.innerHTML = '<tr><td colspan="3" style="color: var(--text-secondary);">Zero active bioassay records</td></tr>';
       }
 
-      // Populate Analogs
+      // Populate Structural Analogs with High-Contrast Similarity Density Bar
       const analogTbody = document.getElementById('analogs-tbody');
       if (DATA.analogs && DATA.analogs.length > 0) {
-        analogTbody.innerHTML = DATA.analogs.map(an => `
-          <tr>
-            <td class="code-cell">${an.cid}</td>
-            <td>${an.iupac_name}</td>
-            <td>${an.molecular_formula}</td>
-            <td><strong>${(an.similarity_score * 100).toFixed(1)}%</strong></td>
-          </tr>
-        `).join('');
+        analogTbody.innerHTML = DATA.analogs.map(an => {
+          const pct = Math.min(Math.max((an.similarity_score || 0) * 100, 0), 100);
+          return `
+            <tr>
+              <td class="code-id">${an.cid}</td>
+              <td>${an.iupac_name}</td>
+              <td>${an.molecular_formula}</td>
+              <td>
+                <div class="similarity-cell">
+                  <div class="similarity-track">
+                    <div class="similarity-fill" style="width: ${pct.toFixed(0)}%;"></div>
+                  </div>
+                  <span>${pct.toFixed(1)}%</span>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
       } else {
-        analogTbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 16px;">No structural analogs identified</td></tr>';
+        analogTbody.innerHTML = '<tr><td colspan="4" style="color: var(--text-secondary);">No analogs above similarity threshold</td></tr>';
       }
 
-      // Initialize Unified High-Resolution 3D Molecular Viewer
+      // Initialize 3D Molecular Conformer Engine
       initUnified3DViewer();
     }
 
     // ==========================================
-    // 4. UNIFIED HIGH-RESOLUTION 3D VIEWER
+    // 4. 3D MOLECULAR VIEWER CONTROLS
     // ==========================================
     function initUnified3DViewer() {
       window.viewer3d = new Molecule3DViewer('molviewer');
-      window.physicsEngine = window.viewer3d;
     }
 
     function setStyle(styleType) {
       currentStyle = styleType;
-      document.querySelectorAll('.viewer-toolbar-row .btn').forEach(b => {
+      document.querySelectorAll('.toolbar-row .btn').forEach(b => {
         if (['btn-ballstick', 'btn-stick', 'btn-sphere', 'btn-wireframe'].includes(b.id)) {
           b.classList.remove('active');
         }
@@ -1114,11 +1299,11 @@
         const hint = document.getElementById('measurement-hint');
         if (btn) {
           btn.classList.toggle('active', active);
-          btn.textContent = 'Measure'; // Rigid button text, never shifts physically
+          btn.textContent = 'Measure';
         }
         if (hint) {
           hint.style.display = active ? 'inline-flex' : 'none';
-          hint.textContent = 'Click 2 atoms to measure distance';
+          hint.textContent = 'Select 2 atoms';
         }
       }
     }
@@ -1136,57 +1321,45 @@
     }
 
     function zoomView(factor) {
-      if (window.viewer3d) {
-        window.viewer3d.stepZoom(factor);
-      }
+      if (window.viewer3d) window.viewer3d.stepZoom(factor);
     }
 
     function rotateViewY(deg) {
-      if (window.viewer3d) {
-        window.viewer3d.stepRotateY(deg);
-      }
+      if (window.viewer3d) window.viewer3d.stepRotateY(deg);
     }
 
     function resetView() {
-      if (window.viewer3d) {
-        window.viewer3d.resetView();
-      }
+      if (window.viewer3d) window.viewer3d.resetView();
     }
 
     function exportSnapshot() {
-      if (window.viewer3d) {
-        window.viewer3d.exportSnapshot();
-      }
-    }
-
-    function switchVisTab(tabKey) {
-      // Compatibility stub
-      if (window.viewer3d) {
-        window.viewer3d.render();
-      }
+      if (window.viewer3d) window.viewer3d.exportSnapshot();
     }
 
     // ==========================================
-    // 5. HIGH-RESOLUTION 3D MOLECULAR ENGINE
+    // 5. 3D MOLECULAR ENGINE (DESIGN.MD PALETTE)
     // ==========================================
+    // Mapped strictly to DESIGN.md Section 5 Data Visualization Palette:
+    // Vibrant Teal (#0D9488), Vivid Indigo (#4F46E5), Deep Rose (#E11D48),
+    // Energetic Amber (#D97706), Functional Emerald (#059669). Zero purple/lavender.
     const ELEMENT_REGISTRY = {
-      'H':  { name: 'Hydrogen',   vdw: 1.20, colorDark: '#f1f5f9', colorLight: '#cbd5e1', valence: 1 },
-      'C':  { name: 'Carbon',     vdw: 1.70, colorDark: '#94a3b8', colorLight: '#475569', valence: 4 },
-      'N':  { name: 'Nitrogen',   vdw: 1.55, colorDark: '#38bdf8', colorLight: '#0284c7', valence: 3 },
-      'O':  { name: 'Oxygen',     vdw: 1.52, colorDark: '#f87171', colorLight: '#dc2626', valence: 2 },
-      'F':  { name: 'Fluorine',   vdw: 1.47, colorDark: '#2dd4bf', colorLight: '#0d9488', valence: 1 },
-      'P':  { name: 'Phosphorus', vdw: 1.80, colorDark: '#fb923c', colorLight: '#ea580c', valence: 5 },
-      'S':  { name: 'Sulfur',     vdw: 1.80, colorDark: '#fbbf24', colorLight: '#d97706', valence: 2 },
-      'Cl': { name: 'Chlorine',   vdw: 1.75, colorDark: '#4ade80', colorLight: '#16a34a', valence: 1 },
-      'Br': { name: 'Bromine',    vdw: 1.85, colorDark: '#c084fc', colorLight: '#9333ea', valence: 1 },
-      'I':  { name: 'Iodine',     vdw: 1.98, colorDark: '#e879f9', colorLight: '#a21caf', valence: 1 }
+      'C':  { name: 'Carbon',     vdw: 1.70, colorDark: '#0D9488', colorLight: '#0D9488', rgba: 'rgba(13, 148, 136, 0.55)' },
+      'N':  { name: 'Nitrogen',   vdw: 1.55, colorDark: '#4F46E5', colorLight: '#4F46E5', rgba: 'rgba(79, 70, 229, 0.55)' },
+      'O':  { name: 'Oxygen',     vdw: 1.52, colorDark: '#E11D48', colorLight: '#E11D48', rgba: 'rgba(225, 29, 72, 0.55)' },
+      'S':  { name: 'Sulfur',     vdw: 1.80, colorDark: '#D97706', colorLight: '#D97706', rgba: 'rgba(217, 119, 6, 0.55)' },
+      'P':  { name: 'Phosphorus', vdw: 1.80, colorDark: '#D97706', colorLight: '#D97706', rgba: 'rgba(217, 119, 6, 0.55)' },
+      'F':  { name: 'Fluorine',   vdw: 1.47, colorDark: '#059669', colorLight: '#059669', rgba: 'rgba(5, 150, 105, 0.55)' },
+      'Cl': { name: 'Chlorine',   vdw: 1.75, colorDark: '#059669', colorLight: '#059669', rgba: 'rgba(5, 150, 105, 0.55)' },
+      'Br': { name: 'Bromine',    vdw: 1.85, colorDark: '#059669', colorLight: '#059669', rgba: 'rgba(5, 150, 105, 0.55)' },
+      'I':  { name: 'Iodine',     vdw: 1.98, colorDark: '#059669', colorLight: '#059669', rgba: 'rgba(5, 150, 105, 0.55)' },
+      'H':  { name: 'Hydrogen',   vdw: 1.20, colorDark: '#9A9895', colorLight: '#787774', rgba: 'rgba(154, 152, 149, 0.45)' }
     };
 
     class Molecule3DViewer {
       constructor(containerId) {
         this.container = document.getElementById(containerId);
         if (!this.container) return;
-        
+
         let canvas = document.getElementById('canvas-3d');
         if (!canvas) {
           this.container.innerHTML = '<canvas id="canvas-3d"></canvas>';
@@ -1204,7 +1377,7 @@
         this.scale = 35;
         this.zoom = 1.0;
         this.style = currentStyle || 'ballstick';
-        this.labelMode = 'symbol'; // 'symbol', 'index', 'full', 'none'
+        this.labelMode = 'symbol';
         this.isSpinning = false;
         this.isMeasuring = false;
         this.showSurface = false;
@@ -1212,7 +1385,6 @@
         this.measurementDistance = null;
         this.hoveredAtom = null;
 
-        // Interaction physics (inertia)
         this.isDragging = false;
         this.dragButton = 0;
         this.lastMouse = { x: 0, y: 0 };
@@ -1241,9 +1413,9 @@
       setupDPI() {
         const rect = this.container.getBoundingClientRect();
         const w = rect.width > 20 ? rect.width : (this.container.offsetWidth || 600);
-        const h = rect.height > 20 ? rect.height : (this.container.offsetHeight || 420);
-        const dpr = Math.min(window.devicePixelRatio || 1, 3);
-        
+        const h = rect.height > 20 ? rect.height : (this.container.offsetHeight || 410);
+        const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+
         this.canvas.width = Math.round(w * dpr);
         this.canvas.height = Math.round(h * dpr);
         this.width = w;
@@ -1260,7 +1432,7 @@
       fitToViewport() {
         if (this.atoms.length === 0) return;
         let maxR = 0;
-        for (let a of this.atoms) {
+        for (const a of this.atoms) {
           const d = Math.hypot(a.x, a.y, a.z);
           if (d > maxR) maxR = d;
         }
@@ -1303,28 +1475,24 @@
               this.atoms.push({
                 index: a + 1,
                 symbol: sym,
-                x: x,
-                y: y,
-                z: z,
+                x, y, z,
                 origX: x, origY: y, origZ: z,
                 bonds: [],
-                meta: ELEMENT_REGISTRY[sym] || { name: sym, vdw: 1.6, colorDark: '#94a3b8', colorLight: '#475569', valence: 1 }
+                meta: ELEMENT_REGISTRY[sym] || ELEMENT_REGISTRY['C']
               });
             }
 
-            // Center atoms strictly around 3D centroid
             if (this.atoms.length > 0) {
               const cx = sumX / this.atoms.length;
               const cy = sumY / this.atoms.length;
               const cz = sumZ / this.atoms.length;
-              for (let a of this.atoms) {
+              for (const a of this.atoms) {
                 a.x -= cx;
                 a.y -= cy;
                 a.z -= cz;
               }
             }
 
-            // Parse bonds
             const bondStart = atomStart + numAtoms;
             for (let b = 0; b < numBonds; b++) {
               const line = lines[bondStart + b];
@@ -1334,11 +1502,7 @@
               const order = parseInt(line.substring(6, 9).trim(), 10) || 1;
 
               if (this.atoms[a1] && this.atoms[a2]) {
-                const bondObj = {
-                  source: this.atoms[a1],
-                  target: this.atoms[a2],
-                  order: order
-                };
+                const bondObj = { source: this.atoms[a1], target: this.atoms[a2], order };
                 this.bonds.push(bondObj);
                 this.atoms[a1].bonds.push(bondObj);
                 this.atoms[a2].bonds.push(bondObj);
@@ -1347,7 +1511,6 @@
           }
         }
 
-        // Synthetic 3D Geometry Fallback if no conformer is present
         if (this.atoms.length === 0) {
           const count = (DATA && DATA.properties && DATA.properties.heavy_atoms) || 12;
           for (let i = 0; i < count; i++) {
@@ -1355,17 +1518,18 @@
             const phi = (i % 2 === 0 ? 0.35 : -0.35);
             const r = 2.4;
             const sym = i % 3 === 0 ? 'O' : (i % 4 === 0 ? 'N' : 'C');
-            const atom = {
+            this.atoms.push({
               index: i + 1,
               symbol: sym,
               x: r * Math.cos(theta),
               y: r * Math.sin(theta),
               z: phi * 1.5,
-              origX: r * Math.cos(theta), origY: r * Math.sin(theta), origZ: phi * 1.5,
+              origX: r * Math.cos(theta),
+              origY: r * Math.sin(theta),
+              origZ: phi * 1.5,
               bonds: [],
-              meta: ELEMENT_REGISTRY[sym] || { name: sym, vdw: 1.6, colorDark: '#94a3b8', colorLight: '#475569', valence: 1 }
-            };
-            this.atoms.push(atom);
+              meta: ELEMENT_REGISTRY[sym] || ELEMENT_REGISTRY['C']
+            });
           }
           for (let i = 0; i < this.atoms.length; i++) {
             const b = {
@@ -1385,7 +1549,7 @@
       bindEvents() {
         this.canvas.addEventListener('mousedown', (e) => {
           this.isDragging = true;
-          this.dragButton = (e.shiftKey) ? 2 : e.button;
+          this.dragButton = e.shiftKey ? 2 : e.button;
           this.lastMouse = { x: e.clientX, y: e.clientY };
           this.velX = 0;
           this.velY = 0;
@@ -1393,9 +1557,7 @@
 
           if (this.isMeasuring && e.button === 0) {
             const atom = this.getAtomAt(e.clientX, e.clientY);
-            if (atom) {
-              this.handleMeasureClick(atom);
-            }
+            if (atom) this.handleMeasureClick(atom);
           }
         });
 
@@ -1406,19 +1568,16 @@
             this.lastMouse = { x: e.clientX, y: e.clientY };
 
             if (this.dragButton === 0) {
-              // Orbit Trackball
               this.rotY += dx * 0.008;
               this.rotX += dy * 0.008;
               this.velX = dx * 0.008;
               this.velY = dy * 0.008;
             } else if (this.dragButton === 2) {
-              // Pan
               this.panX += dx;
               this.panY += dy;
             }
             this.render();
           } else {
-            // Hover Inspection
             const atom = this.getAtomAt(e.clientX, e.clientY);
             if (atom !== this.hoveredAtom) {
               this.hoveredAtom = atom;
@@ -1434,7 +1593,6 @@
         window.addEventListener('mouseup', () => {
           if (this.isDragging) {
             this.isDragging = false;
-            // Apply inertial momentum
             if (!this.isSpinning && (Math.abs(this.velX) > 0.001 || Math.abs(this.velY) > 0.001)) {
               this.startInertia();
             }
@@ -1451,63 +1609,19 @@
 
         this.canvas.addEventListener('wheel', (e) => {
           e.preventDefault();
-          const factor = e.deltaY < 0 ? 1.08 : 0.92;
-          this.stepZoom(factor);
+          this.stepZoom(e.deltaY < 0 ? 1.08 : 0.92);
         }, { passive: false });
 
-        this.canvas.addEventListener('contextmenu', (e) => {
-          e.preventDefault();
-        });
-
-        // Touch Gestures
-        let touchDist = 0;
-        this.canvas.addEventListener('touchstart', (e) => {
-          if (e.touches.length === 1) {
-            this.isDragging = true;
-            this.dragButton = 0;
-            this.lastMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-          } else if (e.touches.length === 2) {
-            touchDist = Math.hypot(
-              e.touches[0].clientX - e.touches[1].clientX,
-              e.touches[0].clientY - e.touches[1].clientY
-            );
-          }
-        }, { passive: false });
-
-        this.canvas.addEventListener('touchmove', (e) => {
-          if (e.touches.length === 1 && this.isDragging) {
-            const dx = e.touches[0].clientX - this.lastMouse.x;
-            const dy = e.touches[0].clientY - this.lastMouse.y;
-            this.lastMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-            this.rotY += dx * 0.008;
-            this.rotX += dy * 0.008;
-            this.render();
-          } else if (e.touches.length === 2) {
-            const dist = Math.hypot(
-              e.touches[0].clientX - e.touches[1].clientX,
-              e.touches[0].clientY - e.touches[1].clientY
-            );
-            if (touchDist > 0) {
-              const factor = dist / touchDist;
-              this.stepZoom(factor);
-            }
-            touchDist = dist;
-          }
-        }, { passive: false });
-
-        this.canvas.addEventListener('touchend', () => {
-          this.isDragging = false;
-        });
+        this.canvas.addEventListener('contextmenu', (e) => e.preventDefault());
       }
 
       startInertia() {
         const step = () => {
           this.rotY += this.velX;
           this.rotX += this.velY;
-          this.velX *= 0.92;
-          this.velY *= 0.92;
+          this.velX *= 0.91;
+          this.velY *= 0.91;
           this.render();
-
           if (Math.abs(this.velX) > 0.0002 || Math.abs(this.velY) > 0.0002) {
             this.inertiaFrame = requestAnimationFrame(step);
           }
@@ -1522,7 +1636,7 @@
 
         let closest = null;
         let minD = 24;
-        for (let a of this.atoms) {
+        for (const a of this.atoms) {
           if (a.screenX === undefined) continue;
           const d = Math.hypot(a.screenX - mx, a.screenY - my);
           if (d < minD && d <= a.screenR + 8) {
@@ -1539,25 +1653,24 @@
           this.tooltip.style.display = 'none';
           return;
         }
-
         const isDark = document.body.classList.contains('dark-theme');
         const color = isDark ? atom.meta.colorDark : atom.meta.colorLight;
 
         this.tooltip.innerHTML = `
           <div class="atom-tooltip-header">
-            <span class="atom-tooltip-badge" style="background: ${color};"></span>
+            <span class="atom-tooltip-swatch" style="background: ${color};"></span>
             <span>${atom.meta.name} (${atom.symbol}) #${atom.index}</span>
           </div>
           <div class="atom-tooltip-row">
-            <span>Coordinates (X,Y,Z):</span>
+            <span>XYZ</span>
             <strong>${atom.origX.toFixed(2)}, ${atom.origY.toFixed(2)}, ${atom.origZ.toFixed(2)} Å</strong>
           </div>
           <div class="atom-tooltip-row">
-            <span>Connected Bonds:</span>
+            <span>Covalent Bonds</span>
             <strong>${atom.bonds.length}</strong>
           </div>
           <div class="atom-tooltip-row">
-            <span>Van der Waals Radius:</span>
+            <span>vdW Radius</span>
             <strong>${atom.meta.vdw.toFixed(2)} Å</strong>
           </div>
         `;
@@ -1568,8 +1681,8 @@
       updateTooltipPosition(e) {
         if (!this.tooltip) return;
         const rect = this.container.getBoundingClientRect();
-        const tx = Math.min(e.clientX - rect.left + 15, this.width - 210);
-        const ty = Math.min(e.clientY - rect.top + 15, this.height - 110);
+        const tx = Math.min(e.clientX - rect.left + 14, this.width - 205);
+        const ty = Math.min(e.clientY - rect.top + 14, this.height - 105);
         this.tooltip.style.left = `${Math.max(10, tx)}px`;
         this.tooltip.style.top = `${Math.max(10, ty)}px`;
       }
@@ -1580,32 +1693,28 @@
         const hudZoom = document.getElementById('hud-zoom');
         if (hudAtoms) hudAtoms.textContent = `${this.atoms.length} Atoms`;
         if (hudBonds) hudBonds.textContent = `${this.bonds.length} Bonds`;
-        if (hudZoom) hudZoom.textContent = `Zoom: ${Math.round(this.zoom * 100)}%`;
+        if (hudZoom) hudZoom.textContent = `${Math.round(this.zoom * 100)}%`;
       }
 
       handleMeasureClick(atom) {
-        if (!this.isMeasuring) return;
-        if (this.measureAtoms.includes(atom)) return;
-
+        if (!this.isMeasuring || this.measureAtoms.includes(atom)) return;
         this.measureAtoms.push(atom);
         const hint = document.getElementById('measurement-hint');
         if (this.measureAtoms.length === 1) {
           if (hint) {
             hint.style.display = 'inline-flex';
-            hint.textContent = `Atom #${atom.index} selected. Click second atom...`;
+            hint.textContent = `${atom.symbol}#${atom.index} → select 2nd atom`;
           }
           this.measurementDistance = null;
           this.render();
         } else if (this.measureAtoms.length === 2) {
-          const a1 = this.measureAtoms[0];
-          const a2 = this.measureAtoms[1];
+          const [a1, a2] = this.measureAtoms;
           this.measurementDistance = Math.hypot(a1.x - a2.x, a1.y - a2.y, a1.z - a2.z);
           this.render();
           if (hint) {
             hint.style.display = 'inline-flex';
-            hint.textContent = `Measured: ${this.measurementDistance.toFixed(2)} Å (${a1.meta.name} #${a1.index} to ${a2.meta.name} #${a2.index})`;
+            hint.textContent = `${a1.symbol}#${a1.index}–${a2.symbol}#${a2.index}: ${this.measurementDistance.toFixed(2)} Å`;
           }
-          // Button remains cleanly labeled 'Measure' without physical shifting
         }
       }
 
@@ -1634,8 +1743,8 @@
             this.spinFrame = requestAnimationFrame(step);
           };
           this.spinFrame = requestAnimationFrame(step);
-        } else {
-          if (this.spinFrame) cancelAnimationFrame(this.spinFrame);
+        } else if (this.spinFrame) {
+          cancelAnimationFrame(this.spinFrame);
         }
         return this.isSpinning;
       }
@@ -1651,14 +1760,13 @@
 
       toggleLabelMode() {
         const modes = ['symbol', 'index', 'full', 'none'];
-        const nextIdx = (modes.indexOf(this.labelMode) + 1) % modes.length;
-        this.labelMode = modes[nextIdx];
+        this.labelMode = modes[(modes.indexOf(this.labelMode) + 1) % modes.length];
         this.render();
         return this.labelMode;
       }
 
       stepZoom(factor) {
-        this.zoom = Math.max(0.2, Math.min(this.zoom * factor, 7.0));
+        this.zoom = Math.max(0.25, Math.min(this.zoom * factor, 6.0));
         this.fitToViewport();
         this.render();
       }
@@ -1678,14 +1786,9 @@
         this.measurementDistance = null;
         this.isMeasuring = false;
         const btn = document.getElementById('btn-measure');
-        if (btn) {
-          btn.textContent = 'Measure';
-          btn.classList.remove('active');
-        }
+        if (btn) btn.classList.remove('active');
         const hint = document.getElementById('measurement-hint');
-        if (hint) {
-          hint.style.display = 'none';
-        }
+        if (hint) hint.style.display = 'none';
         this.fitToViewport();
         this.render();
       }
@@ -1702,35 +1805,15 @@
         if (!this.ctx || this.width === 0 || this.height === 0) return;
         const isDark = document.body.classList.contains('dark-theme');
 
-        // Studio Lighting Canvas Background
-        const bgGrad = this.ctx.createRadialGradient(
-          this.width / 2, this.height * 0.3, 20,
-          this.width / 2, this.height / 2, Math.max(this.width, this.height) * 0.75
-        );
-        if (isDark) {
-          bgGrad.addColorStop(0, '#101726');
-          bgGrad.addColorStop(0.65, '#070b13');
-          bgGrad.addColorStop(1, '#04070c');
-        } else {
-          bgGrad.addColorStop(0, '#ffffff');
-          bgGrad.addColorStop(0.7, '#f8fafc');
-          bgGrad.addColorStop(1, '#edf2f7');
-        }
+        // Transparent canvas background (DESIGN.md Section 5: Sparsity & Contrast)
+        this.ctx.clearRect(0, 0, this.width, this.height);
 
-        this.ctx.fillStyle = bgGrad;
-        this.ctx.fillRect(0, 0, this.width, this.height);
-
-        // Project Atoms into 3D Space
         const fov = 850;
-        let minZ = Infinity, maxZ = -Infinity;
-
-        for (let a of this.atoms) {
-          // Rotation around Y (yaw)
+        for (const a of this.atoms) {
           const x1 = a.x * Math.cos(this.rotY) + a.z * Math.sin(this.rotY);
           const y1 = a.y;
           const z1 = -a.x * Math.sin(this.rotY) + a.z * Math.cos(this.rotY);
 
-          // Rotation around X (pitch)
           const x2 = x1;
           const y2 = y1 * Math.cos(this.rotX) - z1 * Math.sin(this.rotX);
           const z2 = y1 * Math.sin(this.rotX) + z1 * Math.cos(this.rotX);
@@ -1739,114 +1822,63 @@
           a.rotY = y2;
           a.rotZ = z2;
 
-          if (z2 < minZ) minZ = z2;
-          if (z2 > maxZ) maxZ = z2;
-
           const perspective = fov / (fov + z2 * this.scale * 0.32);
           a.perspective = perspective;
           a.screenX = this.width / 2 + this.panX + x2 * this.scale * perspective;
           a.screenY = this.height / 2 + this.panY - y2 * this.scale * perspective;
 
-          // Compute Screen Radius per representation mode
           const vdw = a.meta.vdw || 1.6;
           let r = 8;
           if (this.style === 'ballstick') {
-            r = Math.max(4, vdw * 8.5 * (this.scale / 35) * perspective);
+            r = Math.max(4, vdw * 8.2 * (this.scale / 35) * perspective);
           } else if (this.style === 'stick') {
-            r = Math.max(3, vdw * 4.5 * (this.scale / 35) * perspective);
+            r = Math.max(3, vdw * 4.2 * (this.scale / 35) * perspective);
           } else if (this.style === 'sphere') {
-            r = Math.max(6, vdw * 18.0 * (this.scale / 35) * perspective);
+            r = Math.max(6, vdw * 17.5 * (this.scale / 35) * perspective);
           } else if (this.style === 'line') {
-            r = Math.max(2, 3.5 * perspective);
+            r = Math.max(2.5, 3.5 * perspective);
           }
           a.screenR = r;
         }
 
-        const zSpan = (maxZ - minZ) || 1.0;
-
-        // Depth cueing helper: subtle atmospheric dimming for distant atoms
-        for (let a of this.atoms) {
-          const zNorm = (a.rotZ - minZ) / zSpan;
-          a.depthFactor = 0.72 + 0.28 * (1 - zNorm);
-        }
-
-        // Virtual Ground Floor Shadow
-        if (this.atoms.length > 0) {
-          this.ctx.save();
-          const shadowY = this.height / 2 + this.panY + (maxZ + 3.2) * this.scale * 0.45;
-          const shadowGrad = this.ctx.createRadialGradient(
-            this.width / 2 + this.panX, shadowY, 5,
-            this.width / 2 + this.panX, shadowY, this.scale * 2.8
-          );
-          shadowGrad.addColorStop(0, isDark ? 'rgba(0,0,0,0.45)' : 'rgba(100,116,139,0.18)');
-          shadowGrad.addColorStop(1, 'rgba(0,0,0,0)');
-          this.ctx.fillStyle = shadowGrad;
-          this.ctx.beginPath();
-          this.ctx.ellipse(this.width / 2 + this.panX, shadowY, this.scale * 2.8, this.scale * 0.75, 0, 0, Math.PI * 2);
-          this.ctx.fill();
-          this.ctx.restore();
-        }
-
-        // Molecular Surface Envelope (if enabled)
+        // Translucent Molecular Surface Envelope
         if (this.showSurface && this.atoms.length > 2) {
           this.ctx.save();
-          this.ctx.globalAlpha = isDark ? 0.16 : 0.12;
-          this.ctx.fillStyle = isDark ? '#38bdf8' : '#0284c7';
-          for (let a of this.atoms) {
+          this.ctx.fillStyle = isDark ? 'rgba(13, 148, 136, 0.12)' : 'rgba(13, 148, 136, 0.09)';
+          for (const a of this.atoms) {
             this.ctx.beginPath();
-            this.ctx.arc(a.screenX, a.screenY, a.screenR * 2.4, 0, Math.PI * 2);
+            this.ctx.arc(a.screenX, a.screenY, a.screenR * 2.3, 0, Math.PI * 2);
             this.ctx.fill();
           }
           this.ctx.restore();
         }
 
-        // Painter's Algorithm: Depth Sorting Primitives
+        // Depth-sort bonds and atoms
         const primitives = [];
-        for (let b of this.bonds) {
-          primitives.push({
-            type: 'bond',
-            z: (b.source.rotZ + b.target.rotZ) / 2,
-            bond: b
-          });
+        for (const b of this.bonds) {
+          primitives.push({ type: 'bond', z: (b.source.rotZ + b.target.rotZ) / 2, bond: b });
         }
-        for (let a of this.atoms) {
-          primitives.push({
-            type: 'atom',
-            z: a.rotZ,
-            atom: a
-          });
+        for (const a of this.atoms) {
+          primitives.push({ type: 'atom', z: a.rotZ, atom: a });
         }
         primitives.sort((p1, p2) => p1.z - p2.z);
 
-        // Render sorted primitives
-        for (let p of primitives) {
-          if (p.type === 'bond') {
-            this.drawBond(p.bond, isDark);
-          } else if (p.type === 'atom') {
-            this.drawAtom(p.atom, isDark);
-          }
+        for (const p of primitives) {
+          if (p.type === 'bond') this.drawBond(p.bond, isDark);
+          else this.drawAtom(p.atom, isDark);
         }
 
-        // Draw Measurement Overlay
         if (this.measureAtoms.length > 0) {
           this.drawMeasurementOverlay(isDark);
         }
-
-        // Viewport Coordinates & Status Bar
-        this.ctx.fillStyle = isDark ? '#64748b' : '#94a3b8';
-        this.ctx.font = '10px monospace';
-        this.ctx.textAlign = 'left';
-        this.ctx.fillText(
-          `${this.atoms.length} Atoms | ${this.bonds.length} Bonds | Mode: ${this.style.toUpperCase()}`,
-          14, this.height - 14
-        );
       }
 
       drawBond(b, isDark) {
         const s = b.source;
         const t = b.target;
-        const c1 = isDark ? s.meta.colorDark : s.meta.colorLight;
-        const c2 = isDark ? t.meta.colorDark : t.meta.colorLight;
+        // Semi-transparent node colors for connection lines (DESIGN.md Section 5)
+        const c1 = s.meta.rgba || 'rgba(13, 148, 136, 0.55)';
+        const c2 = t.meta.rgba || 'rgba(13, 148, 136, 0.55)';
 
         const dx = t.screenX - s.screenX;
         const dy = t.screenY - s.screenY;
@@ -1854,54 +1886,35 @@
         const pAvg = (s.perspective + t.perspective) / 2;
 
         if (this.style === 'line') {
-          // Wireframe mode
-          this.ctx.beginPath();
-          this.ctx.moveTo(s.screenX, s.screenY);
-          this.ctx.lineTo((s.screenX + t.screenX) / 2, (s.screenY + t.screenY) / 2);
-          this.ctx.strokeStyle = c1;
-          this.ctx.lineWidth = 1.8;
-          this.ctx.stroke();
-
-          this.ctx.beginPath();
-          this.ctx.moveTo((s.screenX + t.screenX) / 2, (s.screenY + t.screenY) / 2);
-          this.ctx.lineTo(t.screenX, t.screenY);
-          this.ctx.strokeStyle = c2;
-          this.ctx.lineWidth = 1.8;
-          this.ctx.stroke();
+          this.drawBondSegment(s.screenX, s.screenY, t.screenX, t.screenY, 1.8, c1, c2);
           return;
         }
 
-        const baseWidth = (this.style === 'stick' ? 8.5 : (this.style === 'ballstick' ? 5.5 : 3.5));
-        const bondWidth = Math.max(2, baseWidth * (this.scale / 35) * pAvg);
+        const baseWidth = this.style === 'stick' ? 7.5 : (this.style === 'ballstick' ? 4.8 : 3.2);
+        const bondWidth = Math.max(1.8, baseWidth * (this.scale / 35) * pAvg);
 
         if (b.order === 2) {
-          // Double Bond: 2 parallel offset 3D cylinders
           const offset = bondWidth * 0.72;
           const nx = (-dy / len) * offset;
           const ny = (dx / len) * offset;
-
-          this.drawCylindricalBond(s.screenX + nx, s.screenY + ny, t.screenX + nx, t.screenY + ny, bondWidth * 0.58, c1, c2, isDark);
-          this.drawCylindricalBond(s.screenX - nx, s.screenY - ny, t.screenX - nx, t.screenY - ny, bondWidth * 0.58, c1, c2, isDark);
+          this.drawBondSegment(s.screenX + nx, s.screenY + ny, t.screenX + nx, t.screenY + ny, bondWidth * 0.55, c1, c2);
+          this.drawBondSegment(s.screenX - nx, s.screenY - ny, t.screenX - nx, t.screenY - ny, bondWidth * 0.55, c1, c2);
         } else if (b.order === 3) {
-          // Triple Bond: 3 parallel offset 3D cylinders
-          const offset = bondWidth * 0.95;
+          const offset = bondWidth * 0.92;
           const nx = (-dy / len) * offset;
           const ny = (dx / len) * offset;
-
-          this.drawCylindricalBond(s.screenX, s.screenY, t.screenX, t.screenY, bondWidth * 0.48, c1, c2, isDark);
-          this.drawCylindricalBond(s.screenX + nx, s.screenY + ny, t.screenX + nx, t.screenY + ny, bondWidth * 0.48, c1, c2, isDark);
-          this.drawCylindricalBond(s.screenX - nx, s.screenY - ny, t.screenX - nx, t.screenY - ny, bondWidth * 0.48, c1, c2, isDark);
+          this.drawBondSegment(s.screenX, s.screenY, t.screenX, t.screenY, bondWidth * 0.45, c1, c2);
+          this.drawBondSegment(s.screenX + nx, s.screenY + ny, t.screenX + nx, t.screenY + ny, bondWidth * 0.45, c1, c2);
+          this.drawBondSegment(s.screenX - nx, s.screenY - ny, t.screenX - nx, t.screenY - ny, bondWidth * 0.45, c1, c2);
         } else {
-          // Single / Aromatic Bond
-          this.drawCylindricalBond(s.screenX, s.screenY, t.screenX, t.screenY, bondWidth, c1, c2, isDark);
+          this.drawBondSegment(s.screenX, s.screenY, t.screenX, t.screenY, bondWidth, c1, c2);
         }
       }
 
-      drawCylindricalBond(x1, y1, x2, y2, width, color1, color2, isDark) {
+      drawBondSegment(x1, y1, x2, y2, width, color1, color2) {
         const midX = (x1 + x2) / 2;
         const midY = (y1 + y2) / 2;
 
-        // First segment (source atom color)
         this.ctx.beginPath();
         this.ctx.moveTo(x1, y1);
         this.ctx.lineTo(midX, midY);
@@ -1910,7 +1923,6 @@
         this.ctx.lineCap = 'round';
         this.ctx.stroke();
 
-        // Second segment (target atom color)
         this.ctx.beginPath();
         this.ctx.moveTo(midX, midY);
         this.ctx.lineTo(x2, y2);
@@ -1918,68 +1930,43 @@
         this.ctx.lineWidth = width;
         this.ctx.lineCap = 'round';
         this.ctx.stroke();
-
-        // 3D Cylindrical Highlight line along length
-        this.ctx.beginPath();
-        this.ctx.moveTo(x1, y1);
-        this.ctx.lineTo(x2, y2);
-        this.ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.55)';
-        this.ctx.lineWidth = Math.max(1, width * 0.28);
-        this.ctx.stroke();
       }
 
       drawAtom(a, isDark) {
         const r = a.screenR;
         const color = isDark ? a.meta.colorDark : a.meta.colorLight;
 
-        if (this.style === 'line') {
-          // Dot with symbol
-          this.ctx.beginPath();
-          this.ctx.arc(a.screenX, a.screenY, 3, 0, Math.PI * 2);
-          this.ctx.fillStyle = color;
-          this.ctx.fill();
-          if (this.labelMode !== 'none') {
-            this.drawAtomLabel(a, isDark);
-          }
-          return;
-        }
-
-        // High-Resolution Specular 3D Sphere Illusion
-        const lx = a.screenX - r * 0.32;
-        const ly = a.screenY - r * 0.32;
-        const grad = this.ctx.createRadialGradient(lx, ly, r * 0.05, a.screenX, a.screenY, r);
-
-        grad.addColorStop(0, '#ffffff');                           // Specular glint
-        grad.addColorStop(0.18, 'rgba(255, 255, 255, 0.85)');     // Specular bloom
-        grad.addColorStop(0.48, color);                           // Diffuse highlight
-        grad.addColorStop(0.82, color);                           // Body color
-        grad.addColorStop(0.94, isDark ? '#0b0f19' : '#334155');  // Terminator shadow
-        grad.addColorStop(1.0, isDark ? '#020408' : '#0f172a');   // Rim ambient
-
         this.ctx.save();
         this.ctx.beginPath();
-        this.ctx.arc(a.screenX, a.screenY, r, 0, Math.PI * 2);
-        this.ctx.fillStyle = grad;
+        this.ctx.arc(a.screenX, a.screenY, this.style === 'line' ? 3.5 : r, 0, Math.PI * 2);
+        this.ctx.fillStyle = color;
         this.ctx.fill();
 
-        // Subtle outer edge stroke
-        this.ctx.strokeStyle = isDark ? 'rgba(0,0,0,0.45)' : 'rgba(255,255,255,0.4)';
-        this.ctx.lineWidth = 1;
-        this.ctx.stroke();
+        if (this.style !== 'line') {
+          // Subtle inner highlight for 3D depth without gradients over backgrounds
+          this.ctx.beginPath();
+          this.ctx.arc(a.screenX - r * 0.26, a.screenY - r * 0.26, Math.max(1.2, r * 0.24), 0, Math.PI * 2);
+          this.ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+          this.ctx.fill();
+
+          this.ctx.beginPath();
+          this.ctx.arc(a.screenX, a.screenY, r, 0, Math.PI * 2);
+          this.ctx.strokeStyle = isDark ? '#0D0E11' : '#FFFFFF';
+          this.ctx.lineWidth = 1.2;
+          this.ctx.stroke();
+        }
         this.ctx.restore();
 
-        // Labels
         if (this.labelMode !== 'none') {
           this.drawAtomLabel(a, isDark);
         }
 
-        // Selection / Hover Halo
         if (this.measureAtoms.includes(a) || this.hoveredAtom === a) {
           this.ctx.save();
           this.ctx.beginPath();
-          this.ctx.arc(a.screenX, a.screenY, r + 5, 0, Math.PI * 2);
-          this.ctx.strokeStyle = this.measureAtoms.includes(a) ? '#fbbf24' : '#38bdf8';
-          this.ctx.lineWidth = 2.5;
+          this.ctx.arc(a.screenX, a.screenY, r + 4.5, 0, Math.PI * 2);
+          this.ctx.strokeStyle = this.measureAtoms.includes(a) ? '#D97706' : '#0D9488';
+          this.ctx.lineWidth = 2;
           this.ctx.stroke();
           this.ctx.restore();
         }
@@ -1990,102 +1977,92 @@
         if (this.labelMode === 'symbol') text = a.symbol;
         else if (this.labelMode === 'index') text = `${a.index}`;
         else if (this.labelMode === 'full') text = `${a.symbol}${a.index}`;
-
         if (!text) return;
 
-        // In Spacefill/Ball&Stick, don't overwhelm with carbon labels if too small
-        if (this.style === 'ballstick' && a.screenR < 9 && a.symbol === 'C' && this.labelMode === 'symbol') {
+        if (this.style === 'ballstick' && a.screenR < 8.5 && a.symbol === 'C' && this.labelMode === 'symbol') {
           return;
         }
 
-        const fontSize = Math.max(9, Math.min(Math.round(a.screenR * 0.85), 14));
-        this.ctx.font = `bold ${fontSize}px sans-serif`;
+        const fontSize = Math.max(9, Math.min(Math.round(a.screenR * 0.8), 12));
+        this.ctx.font = `600 ${fontSize}px 'IBM Plex Mono', monospace`;
         this.ctx.textAlign = 'center';
         this.ctx.textBaseline = 'middle';
-
-        // High-contrast text label
-        const isLightAtom = (a.symbol === 'H' || a.symbol === 'C');
-        this.ctx.fillStyle = isLightAtom ? '#0f172a' : '#ffffff';
+        this.ctx.fillStyle = '#FFFFFF';
         this.ctx.fillText(text, a.screenX, a.screenY);
       }
 
       drawMeasurementOverlay(isDark) {
-        if (this.measureAtoms.length === 2) {
-          const a1 = this.measureAtoms[0];
-          const a2 = this.measureAtoms[1];
+        if (this.measureAtoms.length !== 2) return;
+        const [a1, a2] = this.measureAtoms;
 
-          // Dashed connection line
-          this.ctx.save();
+        this.ctx.save();
+        this.ctx.beginPath();
+        this.ctx.moveTo(a1.screenX, a1.screenY);
+        this.ctx.lineTo(a2.screenX, a2.screenY);
+        this.ctx.setLineDash([5, 4]);
+        this.ctx.strokeStyle = '#D97706';
+        this.ctx.lineWidth = 2;
+        this.ctx.stroke();
+        this.ctx.restore();
+
+        if (this.measurementDistance !== null) {
+          const mx = (a1.screenX + a2.screenX) / 2;
+          const my = (a1.screenY + a2.screenY) / 2;
+          const label = `${this.measurementDistance.toFixed(2)} Å`;
+
+          this.ctx.font = `600 11px 'IBM Plex Mono', monospace`;
+          const pad = 6;
+          const textWidth = this.ctx.measureText(label).width;
+
+          this.ctx.fillStyle = isDark ? '#16171D' : '#FFFFFF';
+          this.ctx.strokeStyle = '#D97706';
+          this.ctx.lineWidth = 1;
           this.ctx.beginPath();
-          this.ctx.moveTo(a1.screenX, a1.screenY);
-          this.ctx.lineTo(a2.screenX, a2.screenY);
-          this.ctx.setLineDash([6, 4]);
-          this.ctx.strokeStyle = '#fbbf24';
-          this.ctx.lineWidth = 2;
+          this.ctx.roundRect(mx - textWidth / 2 - pad, my - 10, textWidth + pad * 2, 20, 4);
+          this.ctx.fill();
           this.ctx.stroke();
-          this.ctx.restore();
 
-          // Distance Pill Badge
-          if (this.measurementDistance !== null) {
-            const mx = (a1.screenX + a2.screenX) / 2;
-            const my = (a1.screenY + a2.screenY) / 2;
-            const label = `${this.measurementDistance.toFixed(2)} Å`;
-
-            this.ctx.font = 'bold 11px monospace';
-            const pad = 6;
-            const textWidth = this.ctx.measureText(label).width;
-
-            this.ctx.fillStyle = isDark ? '#1a2234' : '#ffffff';
-            this.ctx.strokeStyle = '#fbbf24';
-            this.ctx.lineWidth = 1.5;
-            this.ctx.beginPath();
-            this.ctx.roundRect(mx - textWidth / 2 - pad, my - 11, textWidth + pad * 2, 22, 6);
-            this.ctx.fill();
-            this.ctx.stroke();
-
-            this.ctx.fillStyle = isDark ? '#fbbf24' : '#d97706';
-            this.ctx.textAlign = 'center';
-            this.ctx.textBaseline = 'middle';
-            this.ctx.fillText(label, mx, my);
-          }
+          this.ctx.fillStyle = '#D97706';
+          this.ctx.textAlign = 'center';
+          this.ctx.textBaseline = 'middle';
+          this.ctx.fillText(label, mx, my);
         }
       }
     }
 
-    // Aliases for backward compatibility
     class Static3DStructureViewer extends Molecule3DViewer {}
-    const MolecularPhysicsEngine = Molecule3DViewer;
 
     // ==========================================
-    // 6. DRUG-LIKENESS RADAR CHART
+    // 6. ORAL DRUG-LIKENESS RADAR CHART
     // ==========================================
     function renderRadarChart(p) {
       const svg = document.getElementById('radar-svg');
       if (!svg || !p) return;
 
       const isDark = document.body.classList.contains('dark-theme');
-      const cx = 170, cy = 170, r = 110;
+      const cx = 165, cy = 155, r = 104;
       const axes = [
-        { label: 'MW (500)', max: 600, limit: 500, val: p.molecular_weight },
-        { label: 'XLogP (5)', max: 8, limit: 5, val: p.xlogp !== null ? p.xlogp : 0 },
-        { label: 'HBD (5)', max: 8, limit: 5, val: p.h_bond_donors },
-        { label: 'HBA (10)', max: 15, limit: 10, val: p.h_bond_acceptors },
-        { label: 'TPSA (140)', max: 200, limit: 140, val: p.tpsa },
-        { label: 'RotB (10)', max: 15, limit: 10, val: p.rotatable_bonds }
+        { label: 'MW (500)', max: 600, limit: 500, val: p.molecular_weight || 0 },
+        { label: 'XLogP (5)', max: 8, limit: 5, val: p.xlogp !== null && p.xlogp !== undefined ? Math.max(0, p.xlogp) : 0 },
+        { label: 'HBD (5)', max: 8, limit: 5, val: p.h_bond_donors || 0 },
+        { label: 'HBA (10)', max: 15, limit: 10, val: p.h_bond_acceptors || 0 },
+        { label: 'TPSA (140)', max: 200, limit: 140, val: p.tpsa || 0 },
+        { label: 'RotB (10)', max: 15, limit: 10, val: p.rotatable_bonds || 0 }
       ];
 
       const n = axes.length;
-      let gridSvg = '';
-      let boundaryPoints = [];
-      let compoundPoints = [];
+      // Faint chart gridlines strictly matching DESIGN.md Section 5 (#E7E5E4 light, #292A30 dark)
+      const gridColor = isDark ? '#292A30' : '#E7E5E4';
+      const labelColor = isDark ? '#9A9895' : '#787774';
 
-      // Concentric guide rings
-      const strokeColor = isDark ? '#2e3d5b' : '#e2e8f0';
-      const labelColor = isDark ? '#94a3b8' : '#64748b';
+      let gridSvg = '';
+      const boundaryPoints = [];
+      const compoundPoints = [];
+      let vertexDots = '';
 
       for (let step = 1; step <= 4; step++) {
         const radius = (r / 4) * step;
-        gridSvg += `<circle cx="${cx}" cy="${cy}" r="${radius}" fill="none" stroke="${strokeColor}" stroke-dasharray="2,2" />`;
+        gridSvg += `<circle cx="${cx}" cy="${cy}" r="${radius}" fill="none" stroke="${gridColor}" stroke-width="1" />`;
       }
 
       axes.forEach((axis, i) => {
@@ -2093,27 +2070,29 @@
         const x2 = cx + r * Math.cos(angle);
         const y2 = cy + r * Math.sin(angle);
 
-        // Radial axis line
-        gridSvg += `<line x1="${cx}" y1="${cy}" x2="${x2}" y2="${y2}" stroke="${strokeColor}" />`;
+        gridSvg += `<line x1="${cx}" y1="${cy}" x2="${x2}" y2="${y2}" stroke="${gridColor}" stroke-width="1" />`;
 
-        // Text label
-        const lx = cx + (r + 20) * Math.cos(angle);
-        const ly = cy + (r + 20) * Math.sin(angle);
-        gridSvg += `<text x="${lx}" y="${ly + 4}" fill="${labelColor}" font-size="10" text-anchor="middle" font-family="monospace">${axis.label}</text>`;
+        const lx = cx + (r + 22) * Math.cos(angle);
+        const ly = cy + (r + 22) * Math.sin(angle);
+        gridSvg += `<text x="${lx}" y="${ly + 4}" fill="${labelColor}" font-size="10" text-anchor="middle" font-family="'IBM Plex Mono', monospace">${axis.label}</text>`;
 
-        // Lipinski/Veber Threshold boundary
-        const boundFrac = Math.min(Math.max(axis.limit / axis.max, 0.05), 1.0);
+        const boundFrac = Math.min(Math.max(axis.limit / axis.max, 0.06), 1.0);
         boundaryPoints.push(`${cx + r * boundFrac * Math.cos(angle)},${cy + r * boundFrac * Math.sin(angle)}`);
 
-        // Target compound property point
-        const compFrac = Math.min(Math.max(axis.val / axis.max, 0.05), 1.15);
-        compoundPoints.push(`${cx + r * compFrac * Math.cos(angle)},${cy + r * compFrac * Math.sin(angle)}`);
+        const compFrac = Math.min(Math.max(axis.val / axis.max, 0.06), 1.12);
+        const vx = cx + r * compFrac * Math.cos(angle);
+        const vy = cy + r * compFrac * Math.sin(angle);
+        compoundPoints.push(`${vx},${vy}`);
+
+        const isViolation = axis.val > axis.limit;
+        const dotColor = isViolation ? '#E11D48' : '#0D9488';
+        vertexDots += `<circle cx="${vx}" cy="${vy}" r="4" fill="${dotColor}" stroke="${isDark ? '#16171D' : '#FFFFFF'}" stroke-width="1.5" />`;
       });
 
-      const boundaryPoly = `<polygon points="${boundaryPoints.join(' ')}" fill="rgba(52, 211, 153, 0.08)" stroke="#34d399" stroke-width="1.5" stroke-dasharray="4,4" />`;
-      const compoundPoly = `<polygon points="${compoundPoints.join(' ')}" fill="rgba(56, 189, 248, 0.35)" stroke="#38bdf8" stroke-width="2" />`;
+      const boundaryPoly = `<polygon points="${boundaryPoints.join(' ')}" fill="rgba(217, 119, 6, 0.07)" stroke="#D97706" stroke-width="1.5" stroke-dasharray="4,4" />`;
+      const compoundPoly = `<polygon points="${compoundPoints.join(' ')}" fill="rgba(13, 148, 136, 0.24)" stroke="#0D9488" stroke-width="2" />`;
 
-      svg.innerHTML = gridSvg + boundaryPoly + compoundPoly;
+      svg.innerHTML = gridSvg + boundaryPoly + compoundPoly + vertexDots;
     }
 
     window.addEventListener('DOMContentLoaded', init);
